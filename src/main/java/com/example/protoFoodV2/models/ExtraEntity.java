@@ -2,17 +2,22 @@ package com.example.protoFoodV2.models;
 
 import com.example.protoFoodV2.models.enums.Meal;
 import lombok.Data;
+import lombok.NonNull;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
+@Document
 public class ExtraEntity {
-//    private ObjectId extraEntityId;
+    @Id private ObjectId extraId;
     private ObjectId userId;
-    private Date startDate;
-    private Date endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private Meal meal;// ensure this value cannot be breakfast_lunch_dinner
-    private Integer quantity;
-    private ObjectId paymentId;
+    @NonNull private Integer quantity;
+    @NonNull private ObjectId paymentId;
+    private LocalDateTime timeCreated;
 }
