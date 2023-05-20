@@ -1,6 +1,6 @@
-package com.example.protoFoodV2.models;
+package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.models.enums.Meal;
+import com.example.protoFoodV2.databaseModels.enums.Meal;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -11,13 +11,12 @@ import java.time.LocalDateTime;
 
 @Data
 @Document
-public class ExtraEntity {
-    @Id private ObjectId extraId;
-    private ObjectId userId;
+public class SkipEntity {
+    @Id private ObjectId skipId;
+    @NonNull private ObjectId userId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private Meal meal;// ensure this value cannot be breakfast_lunch_dinner
-    @NonNull private Integer quantity;
+    @NonNull private Meal meal;// ensure this value cannot be breakfast_lunch_dinner
     @NonNull private ObjectId paymentId;
-    private LocalDateTime timeCreated;
+    @NonNull private LocalDateTime timeCreated;
 }

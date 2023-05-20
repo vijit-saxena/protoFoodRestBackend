@@ -1,6 +1,6 @@
-package com.example.protoFoodV2.models;
+package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.models.enums.Meal;
+import com.example.protoFoodV2.databaseModels.enums.Meal;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -25,4 +25,5 @@ public class TiffinEntity {
     @NonNull private final ObjectId paymentId;
     @NonNull private final LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
+    // private LocalDateTime effectiveEndDate; --> when user skips some meals, endDate is pushed forward
 }

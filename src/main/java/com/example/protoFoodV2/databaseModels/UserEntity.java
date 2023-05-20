@@ -1,11 +1,10 @@
-package com.example.protoFoodV2.models;
+package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.models.enums.Gender;
+import com.example.protoFoodV2.databaseModels.enums.Gender;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,8 +25,8 @@ public class UserEntity {
     private List<ObjectId> taste;
     @NonNull private LocalDateTime timeCreated;
 
-    public UserEntity(@NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String contact, @NonNull LocalDateTime timeCreated) {
-        this(firstName, lastName, gender, contact, null, timeCreated);
+    public UserEntity(@NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String contact, String email) {
+        this(firstName, lastName, gender, contact, email, LocalDateTime.now());
     }
 
     public UserEntity(@NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String contact, String email, @NonNull LocalDateTime timeCreated) {

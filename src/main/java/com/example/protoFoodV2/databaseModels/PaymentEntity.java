@@ -1,7 +1,7 @@
-package com.example.protoFoodV2.models;
+package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.models.enums.Action;
-import com.example.protoFoodV2.models.enums.PaymentStatus;
+import com.example.protoFoodV2.databaseModels.enums.Action;
+import com.example.protoFoodV2.databaseModels.enums.PaymentStatus;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
