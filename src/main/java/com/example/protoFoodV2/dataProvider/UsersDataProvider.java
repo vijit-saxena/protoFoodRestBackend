@@ -1,4 +1,4 @@
-package com.example.protoFoodV2.repos;
+package com.example.protoFoodV2.dataProvider;
 
 import com.example.protoFoodV2.databaseModels.UserEntity;
 import org.bson.types.ObjectId;

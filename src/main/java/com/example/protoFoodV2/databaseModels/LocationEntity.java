@@ -15,13 +15,17 @@ public class LocationEntity {
     private String latitude;
     private String longitude;
     private String landmark;
+    private String shortName;
+    private String userId;
 
-    public LocationEntity(String buildingName, String roomNumber, String latitude, String longitude, String landmark) {
+    public LocationEntity(String buildingName, String roomNumber, String latitude, String longitude, String landmark, String shortName, String userId) {
         this.buildingName = buildingName;
         this.roomNumber = roomNumber;
         this.latitude = latitude;
         this.longitude = longitude;
         this.landmark = landmark;
+        this.shortName = shortName;
+        this.userId = userId;
     }
 }
 

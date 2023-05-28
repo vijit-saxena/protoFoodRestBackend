@@ -1,7 +1,7 @@
 package com.example.protoFoodV2.service;
 
 import com.example.protoFoodV2.databaseModels.UserEntity;
-import com.example.protoFoodV2.repos.UsersDataProvider;
+import com.example.protoFoodV2.dataProvider.UsersDataProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
