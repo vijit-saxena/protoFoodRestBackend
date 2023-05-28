@@ -1,9 +1,11 @@
 package com.example.protoFoodV2.api;
 
+import com.example.protoFoodV2.apiModels.LocationApiModel;
 import com.example.protoFoodV2.apiModels.SubscriptionApiModel;
 import com.example.protoFoodV2.apiModels.UserApiModel;
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.databaseModels.UserEntity;
+import com.example.protoFoodV2.service.LocationManagementService;
 import com.example.protoFoodV2.service.SubscriptionManagementService;
 import com.example.protoFoodV2.service.UserManagementService;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class ProtoFoodResource {
     private final UserManagementService userManagementService;
     private final SubscriptionManagementService subscriptionManagementService;
+    private final LocationManagementService locationManagementService;
 
     @GetMapping("/listAllUsers")
     public List<UserEntity> listAllUsers() {
@@ -44,7 +47,7 @@ public class ProtoFoodResource {
     @PostMapping("/addSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.CREATED)
     public void postNewSubscription(@RequestBody SubscriptionApiModel subscriptionApiModel) {
-        subscriptionManagementService.addNewSubscription(subscriptionApiModel.toSubscriptionEntity());
+        subscriptionManagementService.addNewSubscription(subscriptionApiModel);
     }
 
     @GetMapping("/viewSubscription")
@@ -86,7 +89,10 @@ public class ProtoFoodResource {
     }
 
     // LOCATION APIs
-    public void addLocation() {
+    @PostMapping("/addLocation")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void postNewLocation(@RequestBody LocationApiModel locationApiModel) {
+        locationManagementService.addNewLocation(locationApiModel);
     }
 
     public void deleteLocation() {
