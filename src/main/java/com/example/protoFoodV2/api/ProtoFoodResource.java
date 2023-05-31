@@ -50,13 +50,15 @@ public class ProtoFoodResource {
         subscriptionManagementService.addNewSubscription(subscriptionApiModel);
     }
 
-    @GetMapping("/viewSubscription")
+    @GetMapping("/viewSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
-    public Optional<SubscriptionEntity> viewSubscriptionRecord(@RequestParam(name = "id") String subscriptionId) {
-        Optional<SubscriptionEntity> subscriptionEntity = subscriptionManagementService.findSubscriptionById(subscriptionId);
+    public Optional<SubscriptionEntity> viewSubscriptionRecord(
+            @RequestParam(name = "id") String subscriptionId) {
+        Optional<SubscriptionEntity> subscriptionEntity =
+                subscriptionManagementService.findSubscriptionById(subscriptionId);
         subscriptionEntity.ifPresentOrElse(
-                s -> {
-                    System.out.println("Found subscription data : " + s);
+                data -> {
+                    System.out.println("Found subscription data : " + data);
                 },
                 () -> {
                     System.out.println("Subscription data could not be found..");
@@ -68,10 +70,18 @@ public class ProtoFoodResource {
     public void chooseSubscription() {
     }
 
-    @GetMapping("/listAllSubscriptions")
+    @GetMapping("/listAllSubscriptions") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
     public List<SubscriptionEntity> listAllSubscriptions() {
         return subscriptionManagementService.listAllSubscriptionRecords();
+    }
+
+    @GetMapping("/listActiveSubscriptions")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<SubscriptionEntity> listActiveSubscriptions() {
+        List<SubscriptionEntity> activeSubscriptions =
+                subscriptionManagementService.listActiveSubscriptionRecords();
+        return activeSubscriptions;
     }
 
     // EXTRA-TIFFIN APIs
