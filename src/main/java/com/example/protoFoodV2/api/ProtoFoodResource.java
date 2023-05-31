@@ -101,6 +101,16 @@ public class ProtoFoodResource {
     public void updateLocation() {
     }
 
+    @GetMapping("/fetchUserClosestLocation")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Optional<LocationEntity> fetchUserClosestLocation(
+            @RequestParam(name = "latitude") double latitude,
+            @RequestParam(name = "longitude") double longitude,
+            @RequestParam(name = "userPhoneNumber") String userPhoneNumber) {
+        Optional<LocationEntity> closestUserLocation = locationManagementService.fetchClosestLocation(latitude, longitude, userPhoneNumber);
+        return closestUserLocation;
+    }
+
     // PAYMENT APIs
     public void viewPaymentHistory() {
     }
