@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 @Data
 @Document
 public class SkipEntity {
-    @Id private ObjectId skipId;
-    @NonNull private ObjectId userId;
+    @Id private String skipId;
+    @NonNull private String userId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     @NonNull private Meal meal;// ensure this value cannot be breakfast_lunch_dinner
-    @NonNull private ObjectId paymentId;
+    @NonNull private String paymentId;
     @NonNull private LocalDateTime timeCreated;
 }

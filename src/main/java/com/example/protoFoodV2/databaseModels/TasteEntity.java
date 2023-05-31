@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Document
 @NonNull
 public class TasteEntity {
-    @Id private ObjectId tasteId;
-    private ObjectId userId;
+    @Id private String tasteId;
+    private String userId;
     private LocalDateTime date;
     private Meal meal;
     private Integer quantity;
-    private ObjectId paymentId;
+    private String paymentId;
     private LocalDateTime timeCreated;
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Document
 public class UserEntity {
-    @Id private ObjectId userId;
+    @Id private String userId;
     @NonNull private String firstName;
     @NonNull private String lastName;
     @NonNull private Gender gender;
