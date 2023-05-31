@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SubscriptionEntity {
     @Id
-    private ObjectId subscriptionId;
+    private String subscriptionId;
     private double discountInPercent;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;

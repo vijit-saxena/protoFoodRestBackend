@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +24,23 @@ public class SubscriptionManagementService {
     }
 
     public Optional<SubscriptionEntity> findSubscriptionById(String subscriptionId) {
-        return subscriptionsDataProvider.findSubscriptionEntityBySubscriptionId(new ObjectId(subscriptionId));
+        return subscriptionsDataProvider.findSubscriptionEntityBySubscriptionId(subscriptionId);
     }
 
     public List<SubscriptionEntity> listAllSubscriptionRecords() {
         return subscriptionsDataProvider.findAll();
+    }
+
+    public List<SubscriptionEntity> listActiveSubscriptionRecords() {
+        List<SubscriptionEntity> allSubscriptions = subscriptionsDataProvider.findAll();
+        List<SubscriptionEntity> activeSubscriptions = new ArrayList<>();
+        LocalDateTime today = LocalDateTime.now();
+        for (SubscriptionEntity subscription : allSubscriptions) {
+            if (!(today.isBefore(subscription.getStartDateTime()) ||
+                    today.isAfter(subscription.getEndDateTime()))) {
+                activeSubscriptions.add(subscription);
+            }
+        }
+        return activeSubscriptions;
     }
 }

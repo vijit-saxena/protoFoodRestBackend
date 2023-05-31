@@ -13,16 +13,16 @@ import java.util.List;
 @Data
 @Document
 public class TiffinEntity {
-    @Id private ObjectId tiffinId;
-    @NonNull private final ObjectId userId;
+    @Id private String tiffinId;
+    @NonNull private final String userId;
     @NonNull private final LocalDateTime startDate;
     @NonNull private LocalDateTime endDate;
-    @NonNull private final ObjectId subscriptionId;
-    @NonNull private ObjectId locationId;
+    @NonNull private final String subscriptionId;
+    @NonNull private String locationId;
     private List<ObjectId> extras;
     private List<ObjectId> skips;
     @NonNull private Meal meal;
-    @NonNull private final ObjectId paymentId;
+    @NonNull private final String paymentId;
     @NonNull private final LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
     // private LocalDateTime effectiveEndDate; --> when user skips some meals, endDate is pushed forward

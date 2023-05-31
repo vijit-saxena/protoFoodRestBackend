@@ -3,11 +3,13 @@ package com.example.protoFoodV2.api;
 import com.example.protoFoodV2.apiModels.LocationApiModel;
 import com.example.protoFoodV2.apiModels.SubscriptionApiModel;
 import com.example.protoFoodV2.apiModels.UserApiModel;
+import com.example.protoFoodV2.databaseModels.LocationEntity;
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.databaseModels.UserEntity;
 import com.example.protoFoodV2.service.LocationManagementService;
 import com.example.protoFoodV2.service.SubscriptionManagementService;
 import com.example.protoFoodV2.service.UserManagementService;
+import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +26,22 @@ public class ProtoFoodResource {
     private final LocationManagementService locationManagementService;
 
     @GetMapping("/listAllUsers")
+    @ResponseStatus(code = HttpStatus.OK)
     public List<UserEntity> listAllUsers() {
         return userManagementService.listAllUsers();
     }
 
     // USER APIs
-    @PostMapping("/user")
+    @PostMapping("/createUser")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void createUser(@RequestBody UserApiModel userApiModel) {
-        // todo : check whether user already exists, if not proceed
-        System.out.println("CREATE-USER : " + userApiModel);
+        try {
+            userManagementService.userAlreadyExists(userApiModel.getContact());
+        } catch (Exception e) {
+            System.out.println("Exception Raised : " + e.getClass());
+            throw e;
+        }
+
         userManagementService.createUser(userApiModel.toUserEntity());
     }
 
@@ -43,6 +51,14 @@ public class ProtoFoodResource {
     public void deleteUser() {
     }
 
+    @GetMapping("/getUser")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Optional<UserEntity> getUser(
+            @RequestParam(name = "userPhoneNumber") String userPhoneNumber) {
+        Optional<UserEntity> user = userManagementService.getUserByPhoneNumber(userPhoneNumber);
+        return user;
+    }
+
     // SUBSCRIPTION APIs
     @PostMapping("/addSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -50,13 +66,15 @@ public class ProtoFoodResource {
         subscriptionManagementService.addNewSubscription(subscriptionApiModel);
     }
 
-    @GetMapping("/viewSubscription")
+    @GetMapping("/viewSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
-    public Optional<SubscriptionEntity> viewSubscriptionRecord(@RequestParam(name = "id") String subscriptionId) {
-        Optional<SubscriptionEntity> subscriptionEntity = subscriptionManagementService.findSubscriptionById(subscriptionId);
+    public Optional<SubscriptionEntity> viewSubscriptionRecord(
+            @RequestParam(name = "id") String subscriptionId) {
+        Optional<SubscriptionEntity> subscriptionEntity =
+                subscriptionManagementService.findSubscriptionById(subscriptionId);
         subscriptionEntity.ifPresentOrElse(
-                s -> {
-                    System.out.println("Found subscription data : " + s);
+                data -> {
+                    System.out.println("Found subscription data : " + data);
                 },
                 () -> {
                     System.out.println("Subscription data could not be found..");
@@ -68,10 +86,18 @@ public class ProtoFoodResource {
     public void chooseSubscription() {
     }
 
-    @GetMapping("/listAllSubscriptions")
+    @GetMapping("/listAllSubscriptions") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
     public List<SubscriptionEntity> listAllSubscriptions() {
         return subscriptionManagementService.listAllSubscriptionRecords();
+    }
+
+    @GetMapping("/listActiveSubscriptions")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<SubscriptionEntity> listActiveSubscriptions() {
+        List<SubscriptionEntity> activeSubscriptions =
+                subscriptionManagementService.listActiveSubscriptionRecords();
+        return activeSubscriptions;
     }
 
     // EXTRA-TIFFIN APIs
@@ -99,6 +125,16 @@ public class ProtoFoodResource {
     }
 
     public void updateLocation() {
+    }
+
+    @GetMapping("/fetchUserClosestLocation")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Optional<LocationEntity> fetchUserClosestLocation(
+            @RequestParam(name = "latitude") double latitude,
+            @RequestParam(name = "longitude") double longitude,
+            @RequestParam(name = "userPhoneNumber") String userPhoneNumber) {
+        Optional<LocationEntity> closestUserLocation = locationManagementService.fetchClosestLocation(latitude, longitude, userPhoneNumber);
+        return closestUserLocation;
     }
 
     // PAYMENT APIs

@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Document
 @NonNull
 public class PaymentEntity {
-    @Id private ObjectId paymentId;
-    private ObjectId userId;
+    @Id private String paymentId;
+    private String userId;
     private Action action;
     private LocalDateTime dateTime;
     private PaymentStatus status;

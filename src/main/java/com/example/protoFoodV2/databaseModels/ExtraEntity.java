@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Data
 @Document
 public class ExtraEntity {
-    @Id private ObjectId extraId;
-    private ObjectId userId;
+    @Id private String extraId;
+    private String userId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Meal meal;// ensure this value cannot be breakfast_lunch_dinner
     @NonNull private Integer quantity;
-    @NonNull private ObjectId paymentId;
+    @NonNull private String paymentId;
     private LocalDateTime timeCreated;
 }
