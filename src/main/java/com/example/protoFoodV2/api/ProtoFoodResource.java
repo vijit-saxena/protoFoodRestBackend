@@ -1,12 +1,14 @@
 package com.example.protoFoodV2.api;
 
 import com.example.protoFoodV2.apiModels.LocationApiModel;
+import com.example.protoFoodV2.apiModels.PaymentApiModel;
 import com.example.protoFoodV2.apiModels.SubscriptionApiModel;
 import com.example.protoFoodV2.apiModels.UserApiModel;
 import com.example.protoFoodV2.databaseModels.LocationEntity;
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.databaseModels.UserEntity;
 import com.example.protoFoodV2.service.LocationManagementService;
+import com.example.protoFoodV2.service.PaymentManagementService;
 import com.example.protoFoodV2.service.SubscriptionManagementService;
 import com.example.protoFoodV2.service.UserManagementService;
 import com.example.protoFoodV2.utils.Util;
@@ -24,6 +26,7 @@ public class ProtoFoodResource {
     private final UserManagementService userManagementService;
     private final SubscriptionManagementService subscriptionManagementService;
     private final LocationManagementService locationManagementService;
+    private final PaymentManagementService paymentManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -138,6 +141,13 @@ public class ProtoFoodResource {
     }
 
     // PAYMENT APIs
+    @PostMapping("/recordNewPayment")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void recordNewPayment(
+            @RequestBody PaymentApiModel paymentApiModel
+    ) {
+        paymentManagementService.recordNewPayment(paymentApiModel);
+    }
     public void viewPaymentHistory() {
     }
 

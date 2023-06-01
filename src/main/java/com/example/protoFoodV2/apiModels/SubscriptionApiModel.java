@@ -1,12 +1,8 @@
 package com.example.protoFoodV2.apiModels;
 
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
-import com.example.protoFoodV2.databaseModels.enums.Meal;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class SubscriptionApiModel {
@@ -29,6 +25,6 @@ public class SubscriptionApiModel {
                 durationInDays,
                 LocalDateTime.now(),
                 LocalDateTime.now(),
-                Meal.valueOf(mealType));
+                mealType);
     }
 }

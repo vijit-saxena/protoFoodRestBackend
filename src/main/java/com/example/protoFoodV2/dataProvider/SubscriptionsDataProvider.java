@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface SubscriptionsDataProvider extends MongoRepository<SubscriptionEntity, ObjectId> {
+public interface SubscriptionsDataProvider extends MongoRepository<SubscriptionEntity, String> {
     Optional<SubscriptionEntity> findSubscriptionEntityBySubscriptionId(String subscriptionId);
 }
