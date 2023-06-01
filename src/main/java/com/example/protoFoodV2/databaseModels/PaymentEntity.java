@@ -1,22 +1,24 @@
 package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.databaseModels.enums.Action;
-import com.example.protoFoodV2.databaseModels.enums.PaymentStatus;
 import lombok.Data;
-import lombok.NonNull;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 @Data
 @Document
-@NonNull
 public class PaymentEntity {
     @Id private String paymentId;
-    private String userId;
-    private Action action;
-    private LocalDateTime dateTime;
-    private PaymentStatus status;
+    private String amount;
+    private String orderId;
+    private String action;
+    private String paymentDateTime;
+    private String status;
+
+    public PaymentEntity(String paymentId, String amount, String orderId, String action, String paymentDateTime, String status) {
+        this.paymentId = paymentId;
+        this.orderId = orderId;
+        this.action = action;
+        this.paymentDateTime = paymentDateTime;
+        this.status = status;
+    }
 }

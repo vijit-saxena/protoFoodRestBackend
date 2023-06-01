@@ -1,7 +1,6 @@
 package com.example.protoFoodV2.apiModels;
 
 import com.example.protoFoodV2.databaseModels.UserEntity;
-import com.example.protoFoodV2.databaseModels.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
@@ -22,7 +21,7 @@ public class UserApiModel {
         return new UserEntity(
                 firstName,
                 lastName,
-                Gender.valueOf(gender),
+                gender,
                 contact,
                 email);
     }

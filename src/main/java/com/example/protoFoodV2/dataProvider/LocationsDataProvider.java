@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface LocationsDataProvider extends MongoRepository<LocationEntity, ObjectId> {
+public interface LocationsDataProvider extends MongoRepository<LocationEntity, String> {
     List<LocationEntity> findByUserId(String userId);
 
     List<LocationEntity> findByLandmark(String landmark);

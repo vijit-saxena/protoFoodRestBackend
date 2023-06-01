@@ -1,10 +1,8 @@
 package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.databaseModels.enums.Meal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,7 +23,7 @@ public class SubscriptionEntity {
     private Integer durationInDays;
     private LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
-    private Meal mealType;
+    private String mealType;
 
     @PersistenceCreator
     public SubscriptionEntity(double discountInPercent,
@@ -34,7 +32,7 @@ public class SubscriptionEntity {
                               Integer durationInDays,
                               LocalDateTime timeCreated,
                               LocalDateTime timeUpdated,
-                              Meal mealType) {
+                              String mealType) {
         this.discountInPercent = discountInPercent;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;

@@ -1,6 +1,5 @@
 package com.example.protoFoodV2.databaseModels;
 
-import com.example.protoFoodV2.databaseModels.enums.Meal;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -21,7 +20,7 @@ public class TiffinEntity {
     @NonNull private String locationId;
     private List<ObjectId> extras;
     private List<ObjectId> skips;
-    @NonNull private Meal meal;
+    @NonNull private String meal;
     @NonNull private final String paymentId;
     @NonNull private final LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
