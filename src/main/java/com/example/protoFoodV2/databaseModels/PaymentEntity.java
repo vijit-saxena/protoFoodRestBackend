@@ -8,17 +8,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class PaymentEntity {
     @Id private String paymentId;
-    private String amount;
+    private String userId;
+    private String amountInRs;
     private String orderId;
     private String action;
-    private String paymentDateTime;
+    private String timeCreatedInEpochMilli;
     private String status;
 
-    public PaymentEntity(String paymentId, String amount, String orderId, String action, String paymentDateTime, String status) {
+    public PaymentEntity(String paymentId, String userId,
+                         String amountInRs, String orderId, String action,
+                         String timeCreatedInEpochMilli, String status) {
         this.paymentId = paymentId;
+        this.userId = userId;
+        this.amountInRs = amountInRs;
         this.orderId = orderId;
         this.action = action;
-        this.paymentDateTime = paymentDateTime;
+        this.timeCreatedInEpochMilli = timeCreatedInEpochMilli;
         this.status = status;
     }
 }

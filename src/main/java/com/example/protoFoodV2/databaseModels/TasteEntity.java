@@ -11,11 +11,25 @@ import java.time.LocalDateTime;
 @Document
 @NonNull
 public class TasteEntity {
-    @Id private String tasteId;
+    @Id private String orderId;
     private String userId;
-    private LocalDateTime date;
+    private String date;
     private String meal;
-    private Integer quantity;
+    private String quantity;
     private String paymentId;
-    private LocalDateTime timeCreated;
+    private String locationId;
+    private String timeCreatedInEpochMilli;
+
+    public TasteEntity(String orderId, String userId,
+                       String date, String meal, String quantity,
+                       String paymentId, String locationId, String timeCreatedInEpochMilli) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.date = date;
+        this.meal = meal;
+        this.quantity = quantity;
+        this.paymentId = paymentId;
+        this.locationId = locationId;
+        this.timeCreatedInEpochMilli = timeCreatedInEpochMilli;
+    }
 }
