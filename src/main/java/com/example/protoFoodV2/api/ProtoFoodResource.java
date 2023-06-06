@@ -1,16 +1,10 @@
 package com.example.protoFoodV2.api;
 
-import com.example.protoFoodV2.apiModels.LocationApiModel;
-import com.example.protoFoodV2.apiModels.PaymentApiModel;
-import com.example.protoFoodV2.apiModels.SubscriptionApiModel;
-import com.example.protoFoodV2.apiModels.UserApiModel;
+import com.example.protoFoodV2.apiModels.*;
 import com.example.protoFoodV2.databaseModels.LocationEntity;
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.databaseModels.UserEntity;
-import com.example.protoFoodV2.service.LocationManagementService;
-import com.example.protoFoodV2.service.PaymentManagementService;
-import com.example.protoFoodV2.service.SubscriptionManagementService;
-import com.example.protoFoodV2.service.UserManagementService;
+import com.example.protoFoodV2.service.*;
 import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +21,7 @@ public class ProtoFoodResource {
     private final SubscriptionManagementService subscriptionManagementService;
     private final LocationManagementService locationManagementService;
     private final PaymentManagementService paymentManagementService;
+    private final TasteManagementService tasteManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -152,7 +147,10 @@ public class ProtoFoodResource {
     }
 
     // TASTE APIs
-    public void addTasteTiffin() {
+    @PostMapping("/addTasteTiffinRecord")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void addTasteRecord(@RequestBody TasteApiModel tasteApiModel) {
+        tasteManagementService.addNewTasteRecord(tasteApiModel);
     }
 
     //TIFFIN APIs
