@@ -13,9 +13,6 @@ public class TasteManagementService {
     private final TasteDataProvider tasteDataProvider;
 
     public void addNewTasteRecord(TasteApiModel tasteApiModel) {
-        if (tasteApiModel.getTimeCreatedInEpochMilli() == null) {
-            tasteApiModel.setTimeCreatedInEpochMilli(String.valueOf(Instant.now().toEpochMilli()));
-        }
         tasteDataProvider.insert(tasteApiModel.toTasteEntity());
         System.out.println("Added new TASTE record for user " +
                 tasteApiModel.getUserId() + " orderId : " + tasteApiModel.getOrderId());

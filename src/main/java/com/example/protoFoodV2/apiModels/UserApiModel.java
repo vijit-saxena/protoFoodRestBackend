@@ -6,16 +6,18 @@ import lombok.Getter;
 
 @Getter
 public class UserApiModel {
-    @JsonProperty("firstName")
+    @JsonProperty
     private String firstName;
-    @JsonProperty("lastName")
+    @JsonProperty
     private String lastName;
-    @JsonProperty("gender")
+    @JsonProperty
     private String gender;
-    @JsonProperty("contact") // without country code
+    @JsonProperty // without country code
     private String contact;
-    @JsonProperty("email")
+    @JsonProperty
     private String email;
+    @JsonProperty
+    private String timeCreated;
 
     public UserEntity toUserEntity() {
         return new UserEntity(
@@ -23,6 +25,7 @@ public class UserApiModel {
                 lastName,
                 gender,
                 contact,
-                email);
+                email,
+                timeCreated);
     }
 }

@@ -19,11 +19,11 @@ public class PaymentApiModel {
     @JsonProperty
     private String action;
     @JsonProperty
-    private String timeCreatedInEpochMilli;
+    private String timeCreated;
     @JsonProperty
     private String status;
 
     public PaymentEntity toPaymentEntity() {
-        return new PaymentEntity(paymentId, userId, amountInRs, orderId, action, timeCreatedInEpochMilli, status);
+        return new PaymentEntity(paymentId, userId, amountInRs, orderId, action, timeCreated, status);
     }
 }

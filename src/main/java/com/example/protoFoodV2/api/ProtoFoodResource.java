@@ -22,6 +22,7 @@ public class ProtoFoodResource {
     private final LocationManagementService locationManagementService;
     private final PaymentManagementService paymentManagementService;
     private final TasteManagementService tasteManagementService;
+    private final TiffinManagementService tiffinManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -154,6 +155,11 @@ public class ProtoFoodResource {
     }
 
     //TIFFIN APIs
+    @PostMapping("/addTiffinRecord")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void addTiffinRecord(@RequestBody TiffinApiModel tiffinModel) {
+        tiffinManagementService.addNewTiffinRecord(tiffinModel);
+    }
     public void viewCurrentTiffin() {
     }
 
