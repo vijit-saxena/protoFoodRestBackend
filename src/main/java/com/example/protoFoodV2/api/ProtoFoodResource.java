@@ -3,9 +3,9 @@ package com.example.protoFoodV2.api;
 import com.example.protoFoodV2.apiModels.*;
 import com.example.protoFoodV2.databaseModels.LocationEntity;
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
+import com.example.protoFoodV2.databaseModels.TiffinEntity;
 import com.example.protoFoodV2.databaseModels.UserEntity;
 import com.example.protoFoodV2.service.*;
-import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +23,7 @@ public class ProtoFoodResource {
     private final PaymentManagementService paymentManagementService;
     private final TasteManagementService tasteManagementService;
     private final TiffinManagementService tiffinManagementService;
+    private final ExtraTiffinManagementService extraTiffinManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -100,7 +101,10 @@ public class ProtoFoodResource {
     }
 
     // EXTRA-TIFFIN APIs
-    public void addExtraTiffin() {
+    @PostMapping("/addExtraTiffinRecord")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void addExtraTiffinRecord(@RequestBody ExtraTiffinApiModel extraTiffinApiModel) {
+        extraTiffinManagementService.addExtraTiffinRecord(extraTiffinApiModel);
     } // include to-from statements here
 
     public void viewExtraTiffinHistory() {
@@ -118,6 +122,15 @@ public class ProtoFoodResource {
     @ResponseStatus(code = HttpStatus.OK)
     public void postNewLocation(@RequestBody LocationApiModel locationApiModel) {
         locationManagementService.addNewLocation(locationApiModel);
+    }
+
+    @GetMapping("/getUserActiveTiffin")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String fetchUserActiveTiffin(@RequestParam String userPhoneNumber) {
+        Optional<TiffinEntity> tiffin = tiffinManagementService.fetchUserActiveTiffin(userPhoneNumber);
+
+        if (tiffin.isPresent()) return tiffin.get().getTiffinId();
+        else return null;
     }
 
     public void deleteLocation() {

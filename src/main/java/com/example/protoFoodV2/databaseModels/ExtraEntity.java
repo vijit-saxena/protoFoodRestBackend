@@ -1,5 +1,6 @@
 package com.example.protoFoodV2.databaseModels;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
@@ -9,13 +10,14 @@ import java.time.LocalDateTime;
 
 @Data
 @Document
+@AllArgsConstructor
 public class ExtraEntity {
     @Id private String extraId;
     private String userId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private String meal;// ensure this value cannot be breakfast_lunch_dinner
-    @NonNull private Integer quantity;
-    @NonNull private String paymentId;
-    private LocalDateTime timeCreated;
+    private String tiffinId;
+    private String date;
+    private String meal;//todo : ensure this value cannot be breakfast_lunch_dinner
+    private Integer quantity;
+    private String paymentId;
+    private String timeCreated;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 public class TiffinEntity {
-    @Id private String orderId;
+    @Id private String tiffinId;
     private String userId;
     private String startDate;
     private String endDate;
@@ -25,19 +25,4 @@ public class TiffinEntity {
     private String paymentId;
     private String timeCreated;
     private String timeUpdated;
-
-//    public TiffinEntity(String orderId, String userId, String startDate, String endDate, String subscriptionId, String locationId, List<String> extras, List<String> skips, String meal, String paymentId, String timeCreated, String timeUpdated) {
-//        this.orderId = orderId;
-//        this.userId = userId;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.subscriptionId = subscriptionId;
-//        this.locationId = locationId;
-//        this.extras = extras;
-//        this.skips = skips;
-//        this.meal = meal;
-//        this.paymentId = paymentId;
-//        this.timeCreated = timeCreated;
-//        this.timeUpdated = timeUpdated;
-//    }
 }
