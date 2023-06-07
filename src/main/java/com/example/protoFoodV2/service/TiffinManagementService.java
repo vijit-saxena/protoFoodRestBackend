@@ -2,9 +2,13 @@ package com.example.protoFoodV2.service;
 
 import com.example.protoFoodV2.apiModels.TiffinApiModel;
 import com.example.protoFoodV2.dataProvider.TiffinDataProvider;
+import com.example.protoFoodV2.databaseModels.TiffinEntity;
+import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -15,5 +19,11 @@ public class TiffinManagementService {
     public void addNewTiffinRecord(TiffinApiModel tiffinModel) {
         tiffinDataProvider.insert(tiffinModel.toTiffinEntity());
         System.out.println("Added Tiffin Entry : " + tiffinModel.getOrderId());
+    }
+
+    public Optional<TiffinEntity> fetchUserActiveTiffin(String userPhoneNumber) {
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        Optional<TiffinEntity> tiffin = tiffinDataProvider.findTiffinEntityByUserId(finalUserPhoneNumber);
+        return tiffin;
     }
 }
