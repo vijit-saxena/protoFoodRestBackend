@@ -23,11 +23,11 @@ public class TasteApiModel {
     @JsonProperty
     private String locationId;
     @JsonProperty
-    private String timeCreatedInEpochMilli;
+    private String timeCreated;
 
     public TasteEntity toTasteEntity() {
         return new TasteEntity(orderId, userId,
                 date, meal, quantity, paymentId,
-                locationId, timeCreatedInEpochMilli);
+                locationId, timeCreated);
     }
 }

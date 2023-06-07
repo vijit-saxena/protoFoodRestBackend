@@ -1,9 +1,11 @@
 package com.example.protoFoodV2.utils;
 
 import java.security.InvalidParameterException;
+import java.time.ZoneId;
 
 public class Util {
     private static final double EARTH_RADIUS = 6371;
+    public static final ZoneId IST_ZONE = ZoneId.of("Asia/Kolkata");
     public static String refactorPhoneNumber(String contact) {
         // remove any leading/trailing spaces
         contact = contact.trim();
