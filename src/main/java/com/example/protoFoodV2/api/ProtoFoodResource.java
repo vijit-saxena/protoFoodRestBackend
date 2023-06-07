@@ -24,6 +24,7 @@ public class ProtoFoodResource {
     private final TasteManagementService tasteManagementService;
     private final TiffinManagementService tiffinManagementService;
     private final ExtraTiffinManagementService extraTiffinManagementService;
+    private final SkipTiffinManagementService skipTiffinManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -111,7 +112,10 @@ public class ProtoFoodResource {
     }
 
     // SKIP-TIFFIN APIs
-    public void addSkipTiffin() {
+    @PostMapping("/addSkipTiffinRecord")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void addSkipTiffinRecord(@RequestBody SkipTiffinApiModel skipModel) {
+        skipTiffinManagementService.addSkipTiffinRecord(skipModel);
     }
 
     public void viewSkipTiffinHistory() {
