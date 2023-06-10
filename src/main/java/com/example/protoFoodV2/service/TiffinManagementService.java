@@ -27,8 +27,8 @@ public class TiffinManagementService {
         return tiffin;
     }
 
-    public TiffinEntity getTiffinInfo(String tiffinId) {
-        TiffinEntity tiffinInfo = tiffinDataProvider.findTiffinEntityByTiffinId(tiffinId);
+    public Optional<TiffinEntity> getTiffinInfo(String tiffinId) {
+        Optional<TiffinEntity> tiffinInfo = tiffinDataProvider.findTiffinEntityByTiffinId(tiffinId);
 
         return tiffinInfo;
     }
