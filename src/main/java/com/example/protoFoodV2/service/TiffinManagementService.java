@@ -1,6 +1,6 @@
 package com.example.protoFoodV2.service;
 
-import com.example.protoFoodV2.apiModels.TiffinApiModel;
+ 
 import com.example.protoFoodV2.dataProvider.TiffinDataProvider;
 import com.example.protoFoodV2.databaseModels.TiffinEntity;
 import com.example.protoFoodV2.utils.Util;
@@ -16,9 +16,9 @@ public class TiffinManagementService {
     @Autowired
     private final TiffinDataProvider tiffinDataProvider;
 
-    public void addNewTiffinRecord(TiffinApiModel tiffinModel) {
-        tiffinDataProvider.insert(tiffinModel.toTiffinEntity());
-        System.out.println("Added Tiffin Entry : " + tiffinModel.getOrderId());
+    public void addNewTiffinRecord(TiffinEntity tiffinModel) {
+        tiffinDataProvider.insert(tiffinModel);
+        System.out.println("Added Tiffin Entry : " + tiffinModel.getTiffinId());
     }
 
     public Optional<TiffinEntity> fetchUserActiveTiffin(String userPhoneNumber) {

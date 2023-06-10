@@ -1,10 +1,7 @@
 package com.example.protoFoodV2.api;
 
-import com.example.protoFoodV2.apiModels.*;
-import com.example.protoFoodV2.databaseModels.LocationEntity;
-import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
-import com.example.protoFoodV2.databaseModels.TiffinEntity;
-import com.example.protoFoodV2.databaseModels.UserEntity;
+ 
+import com.example.protoFoodV2.databaseModels.*;
 import com.example.protoFoodV2.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +22,7 @@ public class ProtoFoodResource {
     private final TiffinManagementService tiffinManagementService;
     private final ExtraTiffinManagementService extraTiffinManagementService;
     private final SkipTiffinManagementService skipTiffinManagementService;
+    private final OrderManagementService orderManagementService;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -35,15 +33,15 @@ public class ProtoFoodResource {
     // USER APIs
     @PostMapping("/createUser")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void createUser(@RequestBody UserApiModel userApiModel) {
+    public void createUser(@RequestBody UserEntity userEntity) {
         try {
-            userManagementService.userAlreadyExists(userApiModel.getContact());
+            userManagementService.userAlreadyExists(userEntity.getContact());
         } catch (Exception e) {
             System.out.println("Exception Raised : " + e.getClass());
             throw e;
         }
 
-        userManagementService.createUser(userApiModel.toUserEntity());
+        userManagementService.createUser(userEntity);
     }
 
     public void updateUser() {
@@ -63,8 +61,8 @@ public class ProtoFoodResource {
     // SUBSCRIPTION APIs
     @PostMapping("/addSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void postNewSubscription(@RequestBody SubscriptionApiModel subscriptionApiModel) {
-        subscriptionManagementService.addNewSubscription(subscriptionApiModel);
+    public void postNewSubscription(@RequestBody SubscriptionEntity subscriptionEntity) {
+        subscriptionManagementService.addNewSubscription(subscriptionEntity);
     }
 
     @GetMapping("/viewSubscription") // This is an ADMIN API
@@ -104,8 +102,8 @@ public class ProtoFoodResource {
     // EXTRA-TIFFIN APIs
     @PostMapping("/addExtraTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addExtraTiffinRecord(@RequestBody ExtraTiffinApiModel extraTiffinApiModel) {
-        extraTiffinManagementService.addExtraTiffinRecord(extraTiffinApiModel);
+    public void addExtraTiffinRecord(@RequestBody ExtraEntity extraTiffinEntity) {
+        extraTiffinManagementService.addExtraTiffinRecord(extraTiffinEntity);
     } // include to-from statements here
 
     public void viewExtraTiffinHistory() {
@@ -114,7 +112,7 @@ public class ProtoFoodResource {
     // SKIP-TIFFIN APIs
     @PostMapping("/addSkipTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addSkipTiffinRecord(@RequestBody SkipTiffinApiModel skipModel) {
+    public void addSkipTiffinRecord(@RequestBody SkipEntity skipModel) {
         skipTiffinManagementService.addSkipTiffinRecord(skipModel);
     }
 
@@ -124,8 +122,8 @@ public class ProtoFoodResource {
     // LOCATION APIs
     @PostMapping("/addLocation")
     @ResponseStatus(code = HttpStatus.OK)
-    public void postNewLocation(@RequestBody LocationApiModel locationApiModel) {
-        locationManagementService.addNewLocation(locationApiModel);
+    public void postNewLocation(@RequestBody LocationEntity locationEntity) {
+        locationManagementService.addNewLocation(locationEntity);
     }
 
     public void deleteLocation() {
@@ -148,9 +146,9 @@ public class ProtoFoodResource {
     @PostMapping("/recordNewPayment")
     @ResponseStatus(code = HttpStatus.OK)
     public void recordNewPayment(
-            @RequestBody PaymentApiModel paymentApiModel
+            @RequestBody PaymentEntity paymentEntity
     ) {
-        paymentManagementService.recordNewPayment(paymentApiModel);
+        paymentManagementService.recordNewPayment(paymentEntity);
     }
     public void viewPaymentHistory() {
     }
@@ -158,14 +156,14 @@ public class ProtoFoodResource {
     // TASTE APIs
     @PostMapping("/addTasteTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addTasteRecord(@RequestBody TasteApiModel tasteApiModel) {
-        tasteManagementService.addNewTasteRecord(tasteApiModel);
+    public void addTasteRecord(@RequestBody TasteEntity tasteEntity) {
+        tasteManagementService.addNewTasteRecord(tasteEntity);
     }
 
     //TIFFIN APIs
     @PostMapping("/addTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addTiffinRecord(@RequestBody TiffinApiModel tiffinModel) {
+    public void addTiffinRecord(@RequestBody TiffinEntity tiffinModel) {
         tiffinManagementService.addNewTiffinRecord(tiffinModel);
     }
 
@@ -187,5 +185,12 @@ public class ProtoFoodResource {
     }
 
     public void viewTiffinHistory() {
+    }
+
+    // ORDER APIs
+    @PostMapping("/addNewOrderRecord")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void addNewOrderRecord(@RequestBody OrderEntity order) {
+        orderManagementService.addNewOrderRecord(order);
     }
 }
