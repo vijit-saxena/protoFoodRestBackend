@@ -26,4 +26,10 @@ public class TiffinManagementService {
         Optional<TiffinEntity> tiffin = tiffinDataProvider.findTiffinEntityByUserId(finalUserPhoneNumber);
         return tiffin;
     }
+
+    public TiffinEntity getTiffinInfo(String tiffinId) {
+        TiffinEntity tiffinInfo = tiffinDataProvider.findTiffinEntityByTiffinId(tiffinId);
+
+        return tiffinInfo;
+    }
 }

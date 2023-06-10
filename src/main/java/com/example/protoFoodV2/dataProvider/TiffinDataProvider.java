@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface TiffinDataProvider extends MongoRepository<TiffinEntity, String> {
     Optional<TiffinEntity> findTiffinEntityByUserId(String contact);
+
+    TiffinEntity findTiffinEntityByTiffinId(String tiffinId);
 }

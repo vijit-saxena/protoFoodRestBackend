@@ -128,15 +128,6 @@ public class ProtoFoodResource {
         locationManagementService.addNewLocation(locationApiModel);
     }
 
-    @GetMapping("/getUserActiveTiffin")
-    @ResponseStatus(code = HttpStatus.OK)
-    public String fetchUserActiveTiffin(@RequestParam String userPhoneNumber) {
-        Optional<TiffinEntity> tiffin = tiffinManagementService.fetchUserActiveTiffin(userPhoneNumber);
-
-        if (tiffin.isPresent()) return tiffin.get().getTiffinId();
-        else return null;
-    }
-
     public void deleteLocation() {
     }
 
@@ -177,7 +168,22 @@ public class ProtoFoodResource {
     public void addTiffinRecord(@RequestBody TiffinApiModel tiffinModel) {
         tiffinManagementService.addNewTiffinRecord(tiffinModel);
     }
-    public void viewCurrentTiffin() {
+
+
+    @GetMapping("/getUserActiveTiffin")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String fetchUserActiveTiffin(@RequestParam String userPhoneNumber) {
+        Optional<TiffinEntity> tiffin = tiffinManagementService.fetchUserActiveTiffin(userPhoneNumber);
+
+        if (tiffin.isPresent()) return tiffin.get().getTiffinId();
+        else return null;
+    }
+
+    @GetMapping("/getTiffinInfo")
+    public TiffinEntity getTiffinInfo(@RequestParam String tiffinId) {
+        TiffinEntity tiffinInfo = tiffinManagementService.getTiffinInfo(tiffinId);
+
+        return tiffinInfo;
     }
 
     public void viewTiffinHistory() {
