@@ -1,6 +1,6 @@
 package com.example.protoFoodV2.service;
 
-import com.example.protoFoodV2.apiModels.LocationApiModel;
+ 
 import com.example.protoFoodV2.dataProvider.LocationsDataProvider;
 import com.example.protoFoodV2.databaseModels.LocationEntity;
 import com.example.protoFoodV2.utils.Util;
@@ -17,8 +17,8 @@ public class LocationManagementService {
     @Autowired
     private final LocationsDataProvider locationsDataProvider;
 
-    public void addNewLocation(LocationApiModel locationEntity) {
-        locationsDataProvider.insert(locationEntity.toLocationEntity());
+    public void addNewLocation(LocationEntity locationEntity) {
+        locationsDataProvider.insert(locationEntity);
         System.out.println("Added new location : " + locationEntity);
     }
 

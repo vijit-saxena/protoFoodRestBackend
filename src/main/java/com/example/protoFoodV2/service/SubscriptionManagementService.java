@@ -1,12 +1,13 @@
 package com.example.protoFoodV2.service;
 
-import com.example.protoFoodV2.apiModels.SubscriptionApiModel;
+ 
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.dataProvider.SubscriptionsDataProvider;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.Optional;
 public class SubscriptionManagementService {
     private final SubscriptionsDataProvider subscriptionsDataProvider;
 
-    public void addNewSubscription(SubscriptionApiModel subscriptionEntity) {
-        subscriptionsDataProvider.insert(subscriptionEntity.toSubscriptionEntity());
+    public void addNewSubscription(SubscriptionEntity subscriptionEntity) {
+        subscriptionsDataProvider.insert(subscriptionEntity);
         System.out.println("Added new subscription : " + subscriptionEntity);
     }
 
@@ -36,8 +37,8 @@ public class SubscriptionManagementService {
         List<SubscriptionEntity> activeSubscriptions = new ArrayList<>();
         LocalDateTime today = LocalDateTime.now();
         for (SubscriptionEntity subscription : allSubscriptions) {
-            if (!(today.isBefore(subscription.getStartDateTime()) ||
-                    today.isAfter(subscription.getEndDateTime()))) {
+            if (!(today.isBefore(LocalDateTime.parse(subscription.getStartDateTime())) ||
+                    today.isAfter(LocalDateTime.parse(subscription.getEndDateTime())))) {
                 activeSubscriptions.add(subscription);
             }
         }
