@@ -134,6 +134,15 @@ public class ProtoFoodResource {
         locationManagementService.addNewLocation(locationEntity);
     }
 
+    @GetMapping("/fetchUserAllLocations/{userPhoneNumber}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<LocationEntity> fetchUserAllLocations(@PathVariable String userPhoneNumber) {
+        String parsedPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        List<LocationEntity> userAllLocations = locationManagementService.fetchUserAllLocations(parsedPhoneNumber);
+
+        return userAllLocations;
+    }
+
     public void deleteLocation() {
     }
 

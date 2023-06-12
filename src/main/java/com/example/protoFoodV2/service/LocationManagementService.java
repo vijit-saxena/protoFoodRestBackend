@@ -22,6 +22,11 @@ public class LocationManagementService {
         System.out.println("Added new location : " + locationEntity);
     }
 
+    public List<LocationEntity> fetchUserAllLocations(String userPhoneNumber) {
+        List<LocationEntity> allUserLocations = locationsDataProvider.findByUserId(userPhoneNumber);
+        return allUserLocations;
+    }
+
     public Optional<LocationEntity> fetchClosestLocation(double latitude, double longitude, String userPhoneNumber) {
         userPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
         List<LocationEntity> allUserLocations = locationsDataProvider.findByUserId(userPhoneNumber);
