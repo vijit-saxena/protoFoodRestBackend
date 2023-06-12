@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -17,5 +18,11 @@ public class TasteManagementService {
         tasteDataProvider.insert(tasteEntity);
         System.out.println("Added new TASTE record for user " +
                 tasteEntity.getUserId() + " orderId : " + tasteEntity.getOrderId());
+    }
+
+    public Optional<TasteEntity> getTasteInfo(String orderId) {
+        Optional<TasteEntity> taste = tasteDataProvider.findById(orderId);
+
+        return taste;
     }
 }

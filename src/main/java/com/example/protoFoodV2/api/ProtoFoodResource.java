@@ -1,12 +1,18 @@
 package com.example.protoFoodV2.api;
 
- 
 import com.example.protoFoodV2.databaseModels.*;
 import com.example.protoFoodV2.service.*;
+import com.example.protoFoodV2.utils.UserAction;
+import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +29,8 @@ public class ProtoFoodResource {
     private final ExtraTiffinManagementService extraTiffinManagementService;
     private final SkipTiffinManagementService skipTiffinManagementService;
     private final OrderManagementService orderManagementService;
+
+    private final int PAGE_SIZE = 10;
 
     @GetMapping("/listAllUsers")
     @ResponseStatus(code = HttpStatus.OK)
@@ -178,8 +186,8 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getTiffinInfo")
-    public TiffinEntity getTiffinInfo(@RequestParam String tiffinId) {
-        TiffinEntity tiffinInfo = tiffinManagementService.getTiffinInfo(tiffinId);
+    public Optional<TiffinEntity> getTiffinInfo(@RequestParam String tiffinId) {
+        Optional<TiffinEntity> tiffinInfo = tiffinManagementService.getTiffinInfo(tiffinId);
 
         return tiffinInfo;
     }
@@ -192,5 +200,50 @@ public class ProtoFoodResource {
     @ResponseStatus(code = HttpStatus.OK)
     public void addNewOrderRecord(@RequestBody OrderEntity order) {
         orderManagementService.addNewOrderRecord(order);
+    }
+
+    @GetMapping("/getUserAllOrders/{userPhoneNumber}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ConsolidatedOrder> getUserAllConsolidatedOrders(@PathVariable String userPhoneNumber,
+                                                    @RequestParam(defaultValue = "0") int pageNumber) throws NotFoundException {
+        String parsedPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("timeCreated").descending());
+System.out.println("Phone number is : " + parsedPhoneNumber);
+        Page<OrderEntity> paginatedOrders = orderManagementService.getUserAllOrders(parsedPhoneNumber, pageRequest);
+        List<OrderEntity> orderList = paginatedOrders.getContent();
+        System.out.println("Size is : " + orderList.size());
+
+        List<ConsolidatedOrder> consolidatedOrdersList = new ArrayList<>();
+        for (OrderEntity order : orderList) {
+            Optional<TiffinEntity> tiffin = tiffinManagementService.getTiffinInfo(order.getOrderId());
+            Optional<TasteEntity> taste = tasteManagementService.getTasteInfo(order.getOrderId());
+            Optional<ExtraEntity> extra = extraTiffinManagementService.getExtraTiffinInfo(order.getOrderId());
+            Optional<SkipEntity> skip = skipTiffinManagementService.getSkipTiffinInfo(order.getOrderId());
+            Optional<PaymentEntity> payment = paymentManagementService.getPaymentInfo(order.getOrderId());
+
+            ConsolidatedOrder consolidatedOrder = new ConsolidatedOrder();
+            consolidatedOrder.setOrderId(order.getOrderId());
+            consolidatedOrder.setTimeCreated(order.getTimeCreated());
+            if (taste.isPresent()) {
+                consolidatedOrder.setTaste(taste.get());
+                consolidatedOrder.setAction(UserAction.Taste.name());
+            } else if (tiffin.isPresent()) {
+                consolidatedOrder.setTiffin(tiffin.get());
+                consolidatedOrder.setAction(UserAction.Tiffin.name());
+            } else if (extra.isPresent()) {
+                consolidatedOrder.setExtra(extra.get());
+                consolidatedOrder.setAction(UserAction.ExtraTiffin.name());
+            } else if (skip.isPresent()) {
+                consolidatedOrder.setSkip(skip.get());
+                consolidatedOrder.setAction(UserAction.SkipTiffin.name());
+            }
+
+            if (payment.isPresent()) {
+                consolidatedOrder.setPayment(payment.get());
+            }
+            consolidatedOrdersList.add(consolidatedOrder); // Todo : Validate consolidatedOrder is not null.
+        }
+
+        return consolidatedOrdersList;
     }
 }
