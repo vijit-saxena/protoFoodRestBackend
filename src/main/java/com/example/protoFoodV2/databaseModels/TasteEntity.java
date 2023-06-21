@@ -24,7 +24,7 @@ public class TasteEntity {
     @JsonProperty
     private String meal;
     @JsonProperty
-    private String quantity;
+    private Integer quantity;
     @JsonProperty
     private String paymentId;
     @JsonProperty

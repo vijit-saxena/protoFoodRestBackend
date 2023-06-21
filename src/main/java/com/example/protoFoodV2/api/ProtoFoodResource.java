@@ -5,6 +5,7 @@ import com.example.protoFoodV2.service.*;
 import com.example.protoFoodV2.utils.UserAction;
 import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,9 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("protofood/v1")
@@ -143,6 +142,12 @@ public class ProtoFoodResource {
         return userAllLocations;
     }
 
+    @GetMapping("/getLocation/{locationId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public LocationEntity getLocation(@PathVariable String locationId) {
+        return locationManagementService.getLocationById(locationId);
+    }
+
     public void deleteLocation() {
     }
 
@@ -254,5 +259,99 @@ System.out.println("Phone number is : " + parsedPhoneNumber);
         }
 
         return consolidatedOrdersList;
+    }
+
+    // DAILY TIFFIN LIST OPERATIONS
+    @GetMapping("/fetchAllTiffin")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<TiffinEntity> fetchAllTiffin(
+            @NonNull @RequestParam String date,
+            @NonNull @RequestParam String meal) {
+
+        return tiffinManagementService.getAllTiffinForDate(date, meal);
+    }
+
+    @GetMapping("/fetchAllExtras")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<ExtraEntity> fetchAllExtras(
+            @NonNull @RequestParam String date,
+            @NonNull @RequestParam String meal) {
+
+        return extraTiffinManagementService.getAllExtrasForDate(date, meal);
+    }
+
+    @GetMapping("/fetchAllSkips")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<SkipEntity> fetchAllSkips(
+            @NonNull @RequestParam String date,
+            @NonNull @RequestParam String meal) {
+
+        return skipTiffinManagementService.getAllSkipsForDate(date, meal);
+    }
+
+    @GetMapping("/fetchAllTastes")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<TasteEntity> fetchAllTastes(
+            @NonNull @RequestParam String date,
+            @NonNull @RequestParam String meal) {
+
+        return tasteManagementService.getAllTastesForDate(date, meal);
+    }
+
+    @GetMapping("/generateDailyTiffinReport")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<DailyTiffinEntity> generateDailyTiffinReport(
+            @NonNull @RequestParam String date,
+            @NonNull @RequestParam String meal) {
+        List<TiffinEntity> tiffinForDate = fetchAllTiffin(date, meal);
+        List<ExtraEntity> extrasForDate = fetchAllExtras(date, meal);
+        List<SkipEntity> skipsForDate = fetchAllSkips(date, meal);
+        List<TasteEntity> tastesForDate = fetchAllTastes(date, meal);
+
+        List<DailyTiffinEntity> dailyTiffinEntityList = new ArrayList<>();
+
+        Map<String, Integer> userTiffinCount = new HashMap<>();
+        for (TiffinEntity tiffin : tiffinForDate) {
+            userTiffinCount.put(tiffin.getUserId(), 1);
+        }
+
+        for (ExtraEntity extra : extrasForDate) {
+            int count = userTiffinCount.get(extra.getUserId()) + extra.getQuantity();
+            userTiffinCount.put(extra.getUserId(), count);
+        }
+
+        for (SkipEntity skip : skipsForDate) {
+            int count = userTiffinCount.get(skip.getUserId()) - 1;
+            userTiffinCount.put(skip.getUserId(), count);
+        }
+
+        for (TiffinEntity tiffin : tiffinForDate) {
+            DailyTiffinEntity dailyTiffinEntity = new DailyTiffinEntity();
+            dailyTiffinEntity.setUserId(tiffin.getUserId());
+            dailyTiffinEntity.setQuantity(userTiffinCount.get(tiffin.getUserId()));
+
+            LocationEntity location = getLocation(tiffin.getLocationId());
+            dailyTiffinEntity.setAddress(Util.generateAddressFromLocationEntity(location));
+            dailyTiffinEntity.setLatitude(location.getLatitude());
+            dailyTiffinEntity.setLongitude(location.getLongitude());
+
+            dailyTiffinEntity.setTaste(false);
+            dailyTiffinEntityList.add(dailyTiffinEntity);
+        }
+        for(TasteEntity taste : tastesForDate) {
+            DailyTiffinEntity dailyTiffinEntity = new DailyTiffinEntity();
+            dailyTiffinEntity.setUserId(taste.getUserId());
+            dailyTiffinEntity.setQuantity(taste.getQuantity());
+
+            LocationEntity location = getLocation(taste.getLocationId());
+            dailyTiffinEntity.setAddress(Util.generateAddressFromLocationEntity(location));
+            dailyTiffinEntity.setLatitude(location.getLatitude());
+            dailyTiffinEntity.setLongitude(location.getLongitude());
+
+            dailyTiffinEntity.setTaste(true);
+            dailyTiffinEntityList.add(dailyTiffinEntity);
+        }
+
+        return dailyTiffinEntityList;
     }
 }

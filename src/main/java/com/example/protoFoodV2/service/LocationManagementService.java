@@ -22,6 +22,10 @@ public class LocationManagementService {
         System.out.println("Added new location : " + locationEntity);
     }
 
+    public LocationEntity getLocationById(String locationId) {
+        LocationEntity location = locationsDataProvider.findLocationEntityByLocationId(locationId);
+        return location;
+    }
     public List<LocationEntity> fetchUserAllLocations(String userPhoneNumber) {
         List<LocationEntity> allUserLocations = locationsDataProvider.findByUserId(userPhoneNumber);
         return allUserLocations;

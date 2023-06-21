@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -24,5 +25,11 @@ public class ExtraTiffinManagementService {
         Optional<ExtraEntity> extraTiffin = extraTiffinDataProvider.findById(orderId);
 
         return extraTiffin;
+    }
+
+    public List<ExtraEntity> getAllExtrasForDate(String date, String meal) {
+        List<ExtraEntity> extrasByDate = extraTiffinDataProvider.findExtraEntityByDateContainingAndMealContaining(date, meal);
+
+        return  extrasByDate;
     }
 }

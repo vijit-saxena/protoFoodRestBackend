@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -24,5 +25,11 @@ public class SkipTiffinManagementService {
         Optional<SkipEntity> skipTiffin = skipTiffinDataProvider.findById(orderId);
 
         return skipTiffin;
+    }
+
+    public List<SkipEntity> getAllSkipsForDate(String date, String meal) {
+        List<SkipEntity> skipsByDate = skipTiffinDataProvider.findSkipEntityByDateContainingAndMealContaining(date, meal);
+
+        return skipsByDate;
     }
 }
