@@ -330,6 +330,9 @@ System.out.println("Phone number is : " + parsedPhoneNumber);
             dailyTiffinEntity.setUserId(tiffin.getUserId());
             dailyTiffinEntity.setQuantity(userTiffinCount.get(tiffin.getUserId()));
 
+            UserEntity user = getUser(tiffin.getUserId()).get();
+            dailyTiffinEntity.setUserName(user.getFirstName() +  " " + user.getLastName());
+
             LocationEntity location = getLocation(tiffin.getLocationId());
             dailyTiffinEntity.setAddress(Util.generateAddressFromLocationEntity(location));
             dailyTiffinEntity.setLatitude(location.getLatitude());

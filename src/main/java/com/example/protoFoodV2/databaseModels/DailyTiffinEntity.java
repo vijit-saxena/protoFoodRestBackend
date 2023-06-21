@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class DailyTiffinEntity {
     private String userId;
+    private String userName;
     private int quantity;
     private String address;
     private String latitude;
