@@ -1,5 +1,7 @@
 package com.example.protoFoodV2.utils;
 
+import com.example.protoFoodV2.databaseModels.LocationEntity;
+
 import java.security.InvalidParameterException;
 import java.time.ZoneId;
 
@@ -33,8 +35,14 @@ public class Util {
                 Math.cos(lat1Rad) * Math.cos(lat2Rad) *
                         Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = EARTH_RADIUS * c;
 
-        return distance;
+        return EARTH_RADIUS * c;
+    }
+
+    public static String generateAddressFromLocationEntity(LocationEntity locationEntity) {
+        return locationEntity.getRoomNumber() + ", " +
+                locationEntity.getBuildingName() +
+                ", Landmark: " +
+                locationEntity.getLandmark();
     }
 }

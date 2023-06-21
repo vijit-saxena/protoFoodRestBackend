@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -24,5 +25,10 @@ public class TasteManagementService {
         Optional<TasteEntity> taste = tasteDataProvider.findById(orderId);
 
         return taste;
+    }
+
+    public List<TasteEntity> getAllTastesForDate(String date, String meal) {
+        List<TasteEntity> tastesForDate = tasteDataProvider.findTasteEntityByDateContainingAndMealContaining(date, meal);
+        return tastesForDate;
     }
 }

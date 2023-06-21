@@ -10,4 +10,6 @@ public interface LocationsDataProvider extends MongoRepository<LocationEntity, S
     List<LocationEntity> findByUserId(String userId);
 
     List<LocationEntity> findByLandmark(String landmark);
+
+    LocationEntity findLocationEntityByLocationId(String locationId);
 }

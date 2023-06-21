@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -31,5 +34,11 @@ public class TiffinManagementService {
         Optional<TiffinEntity> tiffinInfo = tiffinDataProvider.findTiffinEntityByTiffinId(tiffinId);
 
         return tiffinInfo;
+    }
+
+    public List<TiffinEntity> getAllTiffinForDate(String date, String meal) {
+        List<TiffinEntity> tiffinByDate = tiffinDataProvider.findTiffinEntityByStartDateLessThanEqualAndEndDateGreaterThanEqualAndMealContaining(date, date, meal);
+
+        return tiffinByDate;
     }
 }
