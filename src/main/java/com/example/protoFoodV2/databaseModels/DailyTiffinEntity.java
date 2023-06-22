@@ -8,7 +8,7 @@ import lombok.Setter;
 public class DailyTiffinEntity {
     private String userId;
     private String userName;
-    private int quantity;
+    private Integer quantity;
     private String address;
     private String latitude;
     private String longitude;
