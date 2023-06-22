@@ -33,15 +33,7 @@ public class SubscriptionManagementService {
     }
 
     public List<SubscriptionEntity> listActiveSubscriptionRecords() {
-        List<SubscriptionEntity> allSubscriptions = subscriptionsDataProvider.findAll();
-        List<SubscriptionEntity> activeSubscriptions = new ArrayList<>();
-        LocalDateTime today = LocalDateTime.now();
-        for (SubscriptionEntity subscription : allSubscriptions) {
-            if (!(today.isBefore(LocalDateTime.parse(subscription.getStartDateTime())) ||
-                    today.isAfter(LocalDateTime.parse(subscription.getEndDateTime())))) {
-                activeSubscriptions.add(subscription);
-            }
-        }
-        return activeSubscriptions;
+        String currentDateTime = LocalDateTime.now().toString();
+        return subscriptionsDataProvider.findSubscriptionEntityByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqual(currentDateTime, currentDateTime);
     }
 }

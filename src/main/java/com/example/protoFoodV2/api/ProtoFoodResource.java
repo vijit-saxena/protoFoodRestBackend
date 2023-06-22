@@ -189,14 +189,22 @@ public class ProtoFoodResource {
         tiffinManagementService.addNewTiffinRecord(tiffinModel);
     }
 
-
     @GetMapping("/getUserActiveTiffin")
     @ResponseStatus(code = HttpStatus.OK)
-    public String fetchUserActiveTiffin(@RequestParam String userPhoneNumber) {
-        Optional<TiffinEntity> tiffin = tiffinManagementService.fetchUserActiveTiffin(userPhoneNumber);
+    public Optional<TiffinEntity> fetchUserActiveTiffin(
+            @RequestParam String userPhoneNumber,
+            @RequestParam String dateTime) {
 
-        if (tiffin.isPresent()) return tiffin.get().getTiffinId();
-        else return null;
+        return tiffinManagementService.fetchUserActiveTiffin(userPhoneNumber, dateTime);
+    }
+
+    @GetMapping("/getUserFutureTiffin")
+    @ResponseStatus(code = HttpStatus.OK)
+    public Optional<TiffinEntity> fetchUserFutureTiffin(
+            @RequestParam String userPhoneNumber,
+            @RequestParam String dateTime) {
+
+        return tiffinManagementService.fetchUserFutureTiffin(userPhoneNumber, dateTime);
     }
 
     @GetMapping("/getTiffinInfo")

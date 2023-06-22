@@ -24,9 +24,15 @@ public class TiffinManagementService {
         System.out.println("Added Tiffin Entry : " + tiffinModel.getTiffinId());
     }
 
-    public Optional<TiffinEntity> fetchUserActiveTiffin(String userPhoneNumber) {
+    public Optional<TiffinEntity> fetchUserActiveTiffin(String userPhoneNumber, String dateTime) {
         String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
-        Optional<TiffinEntity> tiffin = tiffinDataProvider.findTiffinEntityByUserId(finalUserPhoneNumber);
+        Optional<TiffinEntity> tiffin = tiffinDataProvider.findTiffinEntityByUserIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(finalUserPhoneNumber, dateTime, dateTime);
+        return tiffin;
+    }
+
+    public Optional<TiffinEntity> fetchUserFutureTiffin(String userPhoneNumber, String dateTime) {
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        Optional<TiffinEntity> tiffin = tiffinDataProvider.findTiffinEntityByUserIdAndStartDateGreaterThan(finalUserPhoneNumber, dateTime);
         return tiffin;
     }
 
