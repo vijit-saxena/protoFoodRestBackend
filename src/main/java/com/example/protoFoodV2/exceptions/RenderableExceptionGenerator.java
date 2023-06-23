@@ -13,7 +13,15 @@ public class RenderableExceptionGenerator {
         return new RenderableException(ErrorCode.InternalServerError, ErrorCode.InternalServerError.getMessage());
     }
 
-    public static RenderableException generateNotAuthorizedException(String message) {
+    public static RenderableException generateInternalServerErrorException(String message) {
+        return new RenderableException(ErrorCode.InternalServerError, message);
+    }
+
+    public static RenderableException generateInternalServerErrorException(String message, Throwable ex) {
+        return new RenderableException(ErrorCode.InternalServerError, message, ex);
+    }
+
+    public static RenderableException generateNotAuthorizedOrNotFoundException(String message) {
         return new RenderableException(ErrorCode.NotAuthorizedOrNotFound, message);
     }
 

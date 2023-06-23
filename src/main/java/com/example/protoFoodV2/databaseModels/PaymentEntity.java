@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @Getter
 @AllArgsConstructor
+@ToString
 public class PaymentEntity {
     @Id
     @JsonProperty

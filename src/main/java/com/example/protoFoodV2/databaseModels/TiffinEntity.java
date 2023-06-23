@@ -14,6 +14,7 @@ import java.util.List;
 @Document
 @AllArgsConstructor
 @Getter
+@ToString
 public class TiffinEntity {
     @Id
     @JsonProperty

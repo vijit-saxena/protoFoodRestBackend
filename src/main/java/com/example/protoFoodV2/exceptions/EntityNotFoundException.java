@@ -8,8 +8,4 @@ public class EntityNotFoundException extends DalException {
     public EntityNotFoundException(Object key) {
         super(String.format("Entity with key %s not found", key == null? "" : key.toString()));
     }
-
-    public enum EntityType {
-        Extra, Skip, Tiffin, Taste, Order, Payment, Subscription, Location, User
-    }
 }

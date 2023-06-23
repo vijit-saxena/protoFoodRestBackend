@@ -1,18 +1,14 @@
 package com.example.protoFoodV2.service;
 
- 
 import com.example.protoFoodV2.databaseModels.SubscriptionEntity;
 import com.example.protoFoodV2.dataProvider.SubscriptionsDataProvider;
+import com.example.protoFoodV2.exceptions.EntityNotFoundException;
+import com.example.protoFoodV2.exceptions.EntityType;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -21,11 +17,12 @@ public class SubscriptionManagementService {
 
     public void addNewSubscription(SubscriptionEntity subscriptionEntity) {
         subscriptionsDataProvider.insert(subscriptionEntity);
-        System.out.println("Added new subscription : " + subscriptionEntity);
     }
 
-    public Optional<SubscriptionEntity> findSubscriptionById(String subscriptionId) {
-        return subscriptionsDataProvider.findSubscriptionEntityBySubscriptionId(subscriptionId);
+    public SubscriptionEntity findSubscriptionById(String subscriptionId) {
+        return subscriptionsDataProvider
+                .findSubscriptionEntityBySubscriptionId(subscriptionId)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.Subscription, subscriptionId));
     }
 
     public List<SubscriptionEntity> listAllSubscriptionRecords() {
