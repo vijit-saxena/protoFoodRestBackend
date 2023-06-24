@@ -3,6 +3,7 @@ package com.example.protoFoodV2.service;
  
 import com.example.protoFoodV2.dataProvider.PaymentsDataProvider;
 import com.example.protoFoodV2.databaseModels.PaymentEntity;
+import com.example.protoFoodV2.exceptions.RenderableExceptionGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,10 @@ public class PaymentManagementService {
 
     public void recordNewPayment(PaymentEntity paymentEntity) {
         paymentsDataProvider.insert(paymentEntity);
-        System.out.println("Recorded New Payment : " + paymentEntity.toString());
     }
 
-    public Optional<PaymentEntity> getPaymentInfo(String orderId) {
-        Optional<PaymentEntity> payment = paymentsDataProvider.findByOrderId(orderId);
-
-        return payment;
+    public PaymentEntity getPaymentInfo(String orderId) {
+        return paymentsDataProvider.findByOrderId(orderId)
+                .orElseThrow(() -> RenderableExceptionGenerator.generateNotAuthorizedOrNotFoundException(String.format("Payment entity with Id: %s not found", orderId)));
     }
 }

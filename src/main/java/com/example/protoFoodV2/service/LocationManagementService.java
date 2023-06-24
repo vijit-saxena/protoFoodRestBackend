@@ -3,14 +3,17 @@ package com.example.protoFoodV2.service;
  
 import com.example.protoFoodV2.dataProvider.LocationsDataProvider;
 import com.example.protoFoodV2.databaseModels.LocationEntity;
+import com.example.protoFoodV2.exceptions.EntityNotFoundException;
+import com.example.protoFoodV2.exceptions.EntityType;
 import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class LocationManagementService {
@@ -19,23 +22,21 @@ public class LocationManagementService {
 
     public void addNewLocation(LocationEntity locationEntity) {
         locationsDataProvider.insert(locationEntity);
-        System.out.println("Added new location : " + locationEntity);
     }
 
     public LocationEntity getLocationById(String locationId) {
-        LocationEntity location = locationsDataProvider.findLocationEntityByLocationId(locationId);
-        return location;
+        return locationsDataProvider.findLocationEntityByLocationId(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.Location, locationId));
     }
     public List<LocationEntity> fetchUserAllLocations(String userPhoneNumber) {
-        List<LocationEntity> allUserLocations = locationsDataProvider.findByUserId(userPhoneNumber);
-        return allUserLocations;
+        return locationsDataProvider.findByUserId(userPhoneNumber);
     }
 
-    public Optional<LocationEntity> fetchClosestLocation(double latitude, double longitude, String userPhoneNumber) {
-        userPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+    public LocationEntity fetchClosestLocation(double latitude, double longitude, String userPhoneNumber) {
         List<LocationEntity> allUserLocations = locationsDataProvider.findByUserId(userPhoneNumber);
+        log.info("Retrieved user's all locations. Searching closest location to LatLng({},{})", latitude, longitude);
 
-        if (allUserLocations.isEmpty()) return Optional.empty();
+        if (allUserLocations.size() == 1) return allUserLocations.get(0);
 
         LocationEntity closestLocation = null;
         double minDist = Double.MAX_VALUE;
@@ -50,7 +51,6 @@ public class LocationManagementService {
                 closestLocation = location;
             }
         }
-        assert closestLocation != null;
-        return Optional.of(closestLocation);
+        return closestLocation;
     }
 }

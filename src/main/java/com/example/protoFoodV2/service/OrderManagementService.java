@@ -1,7 +1,6 @@
 package com.example.protoFoodV2.service;
 
 import com.example.protoFoodV2.dataProvider.OrderDataProvider;
-import com.example.protoFoodV2.databaseModels.ConsolidatedOrder;
 import com.example.protoFoodV2.databaseModels.OrderEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,7 @@ public class OrderManagementService {
     }
 
     public Page<OrderEntity> getUserAllOrders(String userPhoneNumber, PageRequest pageRequest) {
-        Page<OrderEntity> paginatedOrders = orderDataProvider
+        return orderDataProvider
                 .findOrderEntityByUserPhoneNumber(userPhoneNumber, pageRequest);
-
-        return paginatedOrders;
     }
 }

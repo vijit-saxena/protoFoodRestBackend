@@ -3,12 +3,11 @@ package com.example.protoFoodV2.service;
  
 import com.example.protoFoodV2.dataProvider.TasteDataProvider;
 import com.example.protoFoodV2.databaseModels.TasteEntity;
+import com.example.protoFoodV2.exceptions.RenderableExceptionGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -17,18 +16,14 @@ public class TasteManagementService {
 
     public void addNewTasteRecord(TasteEntity tasteEntity) {
         tasteDataProvider.insert(tasteEntity);
-        System.out.println("Added new TASTE record for user " +
-                tasteEntity.getUserId() + " orderId : " + tasteEntity.getOrderId());
     }
 
-    public Optional<TasteEntity> getTasteInfo(String orderId) {
-        Optional<TasteEntity> taste = tasteDataProvider.findById(orderId);
-
-        return taste;
+    public TasteEntity getTasteInfo(String orderId) {
+        return tasteDataProvider.findById(orderId)
+                .orElseThrow(() -> RenderableExceptionGenerator.generateNotAuthorizedOrNotFoundException(String.format("Taste entity with Id %s not found", orderId)));
     }
 
     public List<TasteEntity> getAllTastesForDate(String date, String meal) {
-        List<TasteEntity> tastesForDate = tasteDataProvider.findTasteEntityByDateContainingAndMealContaining(date, meal);
-        return tastesForDate;
+        return tasteDataProvider.findTasteEntityByDateContainingAndMealContaining(date, meal);
     }
 }
