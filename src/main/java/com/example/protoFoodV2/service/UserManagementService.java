@@ -4,6 +4,7 @@ import com.example.protoFoodV2.databaseModels.UserEntity;
 import com.example.protoFoodV2.dataProvider.UsersDataProvider;
 import com.example.protoFoodV2.exceptions.EntityNotFoundException;
 import com.example.protoFoodV2.exceptions.EntityType;
+import com.example.protoFoodV2.exceptions.RenderableExceptionGenerator;
 import com.example.protoFoodV2.utils.Util;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class UserManagementService {
         String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
 
         return usersDataProvider.findUserEntityByContact(finalUserPhoneNumber)
-                .orElseThrow(() -> new EntityNotFoundException(EntityType.User, finalUserPhoneNumber));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        EntityType.User,
+                        finalUserPhoneNumber));
     }
 }

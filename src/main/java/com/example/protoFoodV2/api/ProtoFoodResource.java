@@ -7,26 +7,18 @@ import com.example.protoFoodV2.exceptions.RenderableExceptionGenerator;
 import com.example.protoFoodV2.service.*;
 import com.example.protoFoodV2.utils.UserAction;
 import com.example.protoFoodV2.utils.Util;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -51,19 +43,17 @@ public class ProtoFoodResource {
         log.info("Attempting to list all users");
         try {
             List<UserEntity> userEntityList = userManagementService.listAllUsers();
-
             return ResponseEntity.ok(userEntityList);
         } catch (Exception e) {
             log.error("Exception occurred while listing all users, Exception : {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//            throw RenderableExceptionGenerator.generateInternalServerErrorException();
+            throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
     }
 
     // USER APIs
     @PostMapping("/createUser")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void createUser(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<Void> createUser(@RequestBody UserEntity userEntity) {
         log.info("Attempting to create a new userEntity : {}", userEntity.toString());
         /*
         1. Check for appropriate AuthN/Z
@@ -89,6 +79,8 @@ public class ProtoFoodResource {
                     "Exception : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException(e.getMessage(), e);
         }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public void updateUser() {
@@ -99,11 +91,11 @@ public class ProtoFoodResource {
 
     @GetMapping("/getUser")
     @ResponseStatus(code = HttpStatus.OK)
-    public UserEntity getUser(@RequestParam String userPhoneNumber) {
+    public ResponseEntity<UserEntity> getUser(@RequestParam String userPhoneNumber) {
         log.info("Attempting to fetch userInfo with phoneNumber {}", userPhoneNumber);
         try {
             UserEntity user = userManagementService.getUserByPhoneNumber(userPhoneNumber);
-            return user;
+            return ResponseEntity.ok(user);
         } catch (EntityNotFoundException e) {
             log.error("Could not find user with phoneNumber {}", userPhoneNumber);
             throw RenderableExceptionGenerator.generateInternalServerErrorException(e.getMessage(), e);
@@ -116,7 +108,7 @@ public class ProtoFoodResource {
     // SUBSCRIPTION APIs
     @PostMapping("/addSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void postNewSubscription(@RequestBody SubscriptionEntity subscriptionEntity) {
+    public ResponseEntity<Void> postNewSubscription(@RequestBody SubscriptionEntity subscriptionEntity) {
         log.info("Attempting to register new subscription {}", subscriptionEntity.toString());
         /*
         1. Check for appropriate AuthN/Z
@@ -129,11 +121,12 @@ public class ProtoFoodResource {
             log.error("Exception occurred while creating subscription. {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException(e.getMessage(), e);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/viewSubscription") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
-    public SubscriptionEntity viewSubscriptionRecord(
+    public ResponseEntity<SubscriptionEntity> viewSubscriptionRecord(
             @RequestParam(name = "id") String subscriptionId) {
         log.info("Attempting to fetch subscription record for Id : {}", subscriptionId);
         /*
@@ -142,10 +135,11 @@ public class ProtoFoodResource {
         3. Fetch subscription record and return
          */
         try {
-            return subscriptionManagementService.findSubscriptionById(subscriptionId);
-        } catch (EntityNotFoundException e) {
-            log.error("Exception occurred white fetching subscription : {}, {}, {}", subscriptionId, e.getClass(), e.getMessage());
-            throw e;
+            SubscriptionEntity entity = subscriptionManagementService.findSubscriptionById(subscriptionId);
+            return ResponseEntity.ok(entity);
+        } catch (EntityNotFoundException ene) {
+            log.error("Exception occurred white fetching subscription : {}, {}, {}", subscriptionId, ene.getClass(), ene.getMessage());
+            throw ene;
         } catch (Exception e) {
             log.error("Unexpected exception occurred : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException(e.getMessage());
@@ -157,10 +151,11 @@ public class ProtoFoodResource {
 
     @GetMapping("/listAllSubscriptions") // This is an ADMIN API
     @ResponseStatus(code = HttpStatus.OK)
-    public List<SubscriptionEntity> listAllSubscriptions() {
+    public ResponseEntity<List<SubscriptionEntity>> listAllSubscriptions() {
         log.info("Attempting to list all subscriptions");
         try {
-            return subscriptionManagementService.listAllSubscriptionRecords();
+            List<SubscriptionEntity> entityList = subscriptionManagementService.listAllSubscriptionRecords();
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to list all subscriptions. Exception Occurred. {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -169,11 +164,12 @@ public class ProtoFoodResource {
 
     @GetMapping("/listActiveSubscriptions")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<SubscriptionEntity> listActiveSubscriptions() {
+    public ResponseEntity<List<SubscriptionEntity>> listActiveSubscriptions() {
         log.info("Attempting to list all active subscriptions");
 
         try {
-            return subscriptionManagementService.listActiveSubscriptionRecords();
+            List<SubscriptionEntity> entityList = subscriptionManagementService.listActiveSubscriptionRecords();
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to list all active subscriptions. Exception: {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -183,7 +179,7 @@ public class ProtoFoodResource {
     // EXTRA-TIFFIN APIs
     @PostMapping("/addExtraTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addExtraTiffinRecord(@RequestBody ExtraEntity extraTiffinEntity) {
+    public ResponseEntity<Void> addExtraTiffinRecord(@RequestBody ExtraEntity extraTiffinEntity) {
         log.info("Attempting to add new extra tiffin record : {}", extraTiffinEntity.toString());
         /*
         1. Validate params
@@ -196,6 +192,7 @@ public class ProtoFoodResource {
             log.error("Error adding extraTiffin record {}. Exception: {}, {}", extraTiffinEntity.toString(), e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     } // include to-from statements here
 
     public void viewExtraTiffinHistory() {
@@ -204,7 +201,7 @@ public class ProtoFoodResource {
     // SKIP-TIFFIN APIs
     @PostMapping("/addSkipTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addSkipTiffinRecord(@RequestBody SkipEntity skipModel) {
+    public ResponseEntity<Void> addSkipTiffinRecord(@RequestBody SkipEntity skipModel) {
         log.info("Attempting to add skip tiffin record : {}", skipModel.toString());
         try {
             skipTiffinManagementService.addSkipTiffinRecord(skipModel);
@@ -212,6 +209,7 @@ public class ProtoFoodResource {
             log.error("Error adding skip tiffin record {}. Exception: {}, {}", skipModel.toString(), e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public void viewSkipTiffinHistory() {
@@ -220,7 +218,7 @@ public class ProtoFoodResource {
     // LOCATION APIs
     @PostMapping("/addLocation")
     @ResponseStatus(code = HttpStatus.OK)
-    public void postNewLocation(@RequestBody LocationEntity locationEntity) {
+    public ResponseEntity<Void> postNewLocation(@RequestBody LocationEntity locationEntity) {
         log.info("Attempting to add new location: {}", locationEntity.toString());
         try {
             locationManagementService.addNewLocation(locationEntity);
@@ -228,11 +226,12 @@ public class ProtoFoodResource {
             log.error("Error adding location: {}, Exception {}, {}", locationEntity.toString(), e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/fetchUserAllLocations/{userPhoneNumber}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<LocationEntity> fetchUserAllLocations(@PathVariable String userPhoneNumber) {
+    public ResponseEntity<List<LocationEntity>> fetchUserAllLocations(@PathVariable String userPhoneNumber) {
         log.info("Attempting to fetch user->{} all locations", userPhoneNumber);
         String parsedPhoneNumber;
 
@@ -244,7 +243,8 @@ public class ProtoFoodResource {
         }
 
         try {
-            return locationManagementService.fetchUserAllLocations(parsedPhoneNumber);
+            List<LocationEntity> entityList = locationManagementService.fetchUserAllLocations(parsedPhoneNumber);
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to fetch user->{} all locations. Exception: {}, {}", parsedPhoneNumber, e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -253,11 +253,12 @@ public class ProtoFoodResource {
 
     @GetMapping("/getLocation/{locationId}")
     @ResponseStatus(code = HttpStatus.OK)
-    public LocationEntity getLocation(@PathVariable String locationId) {
+    public ResponseEntity<LocationEntity> getLocation(@PathVariable String locationId) {
         log.info("Attempting to fetch location with Id : {}", locationId);
 
         try {
-            return locationManagementService.getLocationById(locationId);
+            LocationEntity entity = locationManagementService.getLocationById(locationId);
+            return ResponseEntity.ok(entity);
         } catch (EntityNotFoundException ene) {
             log.error("Exception occurred white fetching location : {}, {}, {}", locationId, ene.getClass(), ene.getMessage());
             throw ene;
@@ -275,7 +276,7 @@ public class ProtoFoodResource {
 
     @GetMapping("/fetchUserClosestLocation")
     @ResponseStatus(code = HttpStatus.OK)
-    public LocationEntity fetchUserClosestLocation(
+    public ResponseEntity<LocationEntity> fetchUserClosestLocation(
             @RequestParam(name = "latitude") double latitude,
             @RequestParam(name = "longitude") double longitude,
             @RequestParam(name = "userPhoneNumber") String userPhoneNumber) {
@@ -295,7 +296,8 @@ public class ProtoFoodResource {
         }
 
         try {
-            return locationManagementService.fetchClosestLocation(latitude, longitude, parsedPhoneNumber);
+            LocationEntity entity = locationManagementService.fetchClosestLocation(latitude, longitude, parsedPhoneNumber);
+            return ResponseEntity.ok(entity);
         } catch (Exception e) {
             log.error("Failed to fetch user->{} closest location. Exception: {}, {}", parsedPhoneNumber, e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -305,7 +307,7 @@ public class ProtoFoodResource {
     // PAYMENT APIs
     @PostMapping("/recordNewPayment")
     @ResponseStatus(code = HttpStatus.OK)
-    public void recordNewPayment(@RequestBody PaymentEntity paymentEntity) {
+    public ResponseEntity<Void> recordNewPayment(@RequestBody PaymentEntity paymentEntity) {
         log.info("Attempting to insert new payment record: {}", paymentEntity.toString());
         try {
             paymentManagementService.recordNewPayment(paymentEntity);
@@ -313,6 +315,7 @@ public class ProtoFoodResource {
             log.error("Error inserting new payment record. Exception: {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     public void viewPaymentHistory() {
     }
@@ -320,7 +323,7 @@ public class ProtoFoodResource {
     // TASTE APIs
     @PostMapping("/addTasteTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addTasteRecord(@RequestBody TasteEntity tasteEntity) {
+    public ResponseEntity<Void> addTasteRecord(@RequestBody TasteEntity tasteEntity) {
         log.info("Attempting to add taste record: {}", tasteEntity.toString());
         try {
             tasteManagementService.addNewTasteRecord(tasteEntity);
@@ -328,12 +331,13 @@ public class ProtoFoodResource {
             log.error("Error adding taste record. Exception: {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //TIFFIN APIs
     @PostMapping("/addTiffinRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addTiffinRecord(@RequestBody TiffinEntity tiffinModel) {
+    public ResponseEntity<Void> addTiffinRecord(@RequestBody TiffinEntity tiffinModel) {
         log.info("Attempting to add new tiffin record: {}", tiffinModel.toString());
         try {
             tiffinManagementService.addNewTiffinRecord(tiffinModel);
@@ -341,11 +345,12 @@ public class ProtoFoodResource {
             log.error("Error adding tiffin record. Exception: {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/getUserActiveTiffin")
     @ResponseStatus(code = HttpStatus.OK)
-    public TiffinEntity fetchUserActiveTiffin(
+    public ResponseEntity<TiffinEntity> fetchUserActiveTiffin(
             @RequestParam String userPhoneNumber,
             @RequestParam String dateTime) {
         log.info("Attempting to fetch user->{} active tiffins for {}", userPhoneNumber, dateTime);
@@ -359,7 +364,8 @@ public class ProtoFoodResource {
         }
 
         try {
-            return tiffinManagementService.fetchUserActiveTiffin(parsedPhoneNumber, dateTime);
+            TiffinEntity entity = tiffinManagementService.fetchUserActiveTiffin(parsedPhoneNumber, dateTime);
+            return ResponseEntity.ok(entity);
         } catch (Exception e) {
             log.error("Failed to fetch user->{} active tiffins for {}. Exception: {}, {}", userPhoneNumber, dateTime, e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -368,7 +374,7 @@ public class ProtoFoodResource {
 
     @GetMapping("/getUserFutureTiffin")
     @ResponseStatus(code = HttpStatus.OK)
-    public TiffinEntity fetchUserFutureTiffin(
+    public ResponseEntity<TiffinEntity> fetchUserFutureTiffin(
             @RequestParam String userPhoneNumber,
             @RequestParam String dateTime) {
         log.info("Attempting to fetch user->{} future tiffins for {}", userPhoneNumber, dateTime);
@@ -382,7 +388,8 @@ public class ProtoFoodResource {
         }
 
         try {
-            return tiffinManagementService.fetchUserFutureTiffin(parsedPhoneNumber, dateTime);
+            TiffinEntity entity = tiffinManagementService.fetchUserFutureTiffin(parsedPhoneNumber, dateTime);
+            return ResponseEntity.ok(entity);
         } catch (Exception e) {
             log.error("Failed to fetch user->{} future tiffins for {}. Exception: {}, {}", userPhoneNumber, dateTime, e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -390,11 +397,12 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getTiffinInfo")
-    public TiffinEntity getTiffinInfo(@RequestParam String tiffinId) {
+    public ResponseEntity<TiffinEntity> getTiffinInfo(@RequestParam String tiffinId) {
         log.info("Attempting to get tiffin by Id : {}", tiffinId);
 
         try {
-            return tiffinManagementService.getTiffinInfo(tiffinId);
+            TiffinEntity entity = tiffinManagementService.getTiffinInfo(tiffinId);
+            return ResponseEntity.ok(entity);
         } catch (EntityNotFoundException ene) {
             log.error("Failed to get tiffin by Id : {}. Exception: {}, {}", tiffinId, ene.getClass(), ene.getMessage());
             throw ene;
@@ -410,7 +418,7 @@ public class ProtoFoodResource {
     // ORDER APIs
     @PostMapping("/addNewOrderRecord")
     @ResponseStatus(code = HttpStatus.OK)
-    public void addNewOrderRecord(@RequestBody OrderEntity order) {
+    public ResponseEntity<Void> addNewOrderRecord(@RequestBody OrderEntity order) {
         log.info("Attempting to add new order: {}", order.toString());
         try {
             orderManagementService.addNewOrderRecord(order);
@@ -418,11 +426,12 @@ public class ProtoFoodResource {
             log.error("Error inserting new order: {}. Exception: {}, {}", order.toString(), e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/getUserAllOrders/{userPhoneNumber}")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<ConsolidatedOrder> getUserAllConsolidatedOrders(
+    public ResponseEntity<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
             @PathVariable String userPhoneNumber,
             @RequestParam(defaultValue = "0") int pageNumber) {
         String parsedPhoneNumber;
@@ -486,18 +495,19 @@ public class ProtoFoodResource {
             consolidatedOrdersList.add(consolidatedOrder); // Todo : Validate consolidatedOrder is not null.
         }
 
-        return consolidatedOrdersList;
+        return ResponseEntity.ok(consolidatedOrdersList);
     }
 
     // DAILY TIFFIN LIST OPERATIONS
     @GetMapping("/fetchAllTiffin")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<TiffinEntity> fetchAllTiffin(
+    public ResponseEntity<List<TiffinEntity>> fetchAllTiffin(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
         log.info("Attempting to fetch all tiffin for date: {} and meal: {}", date, meal);
         try {
-            return tiffinManagementService.getAllTiffinForDate(date, meal);
+            List<TiffinEntity> entityList = tiffinManagementService.getAllTiffinForDate(date, meal);
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Exception occurred while fetching tiffins data. Exception : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -506,12 +516,13 @@ public class ProtoFoodResource {
 
     @GetMapping("/fetchAllExtras")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<ExtraEntity> fetchAllExtras(
+    public ResponseEntity<List<ExtraEntity>> fetchAllExtras(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
         log.info("Attempting to fetch all extra tiffins for date : {} and meal : {}", date, meal);
         try {
-            return extraTiffinManagementService.getAllExtrasForDate(date, meal);
+            List<ExtraEntity> entityList = extraTiffinManagementService.getAllExtrasForDate(date, meal);
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to fetch all extra tiffins data. Exception : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -520,12 +531,13 @@ public class ProtoFoodResource {
 
     @GetMapping("/fetchAllSkips")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<SkipEntity> fetchAllSkips(
+    public ResponseEntity<List<SkipEntity>> fetchAllSkips(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
         log.info("Attempting to fetch all skip tiffins for date : {} and meal : {}", date, meal);
         try {
-            return skipTiffinManagementService.getAllSkipsForDate(date, meal);
+            List<SkipEntity> entityList = skipTiffinManagementService.getAllSkipsForDate(date, meal);
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to fetch all skip tiffins data. Exception : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -534,12 +546,13 @@ public class ProtoFoodResource {
 
     @GetMapping("/fetchAllTastes")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<TasteEntity> fetchAllTastes(
+    public ResponseEntity<List<TasteEntity>> fetchAllTastes(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
         log.info("Attempting to fetch all taste tiffin entries for date: {} and meal: {}", date, meal);
         try {
-            return tasteManagementService.getAllTastesForDate(date, meal);
+            List<TasteEntity> entityList = tasteManagementService.getAllTastesForDate(date, meal);
+            return ResponseEntity.ok(entityList);
         } catch (Exception e) {
             log.error("Failed to fetch all taste data entries. Exception : {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
@@ -548,7 +561,7 @@ public class ProtoFoodResource {
 
     @GetMapping("/generateDailyTiffinReport")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<DailyTiffinEntity> generateDailyTiffinReport(
+    public ResponseEntity<List<DailyTiffinEntity>> generateDailyTiffinReport(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
         log.info("Attempting to generate Daily Tiffin Report for date: {} and meal: {}", date, meal);
@@ -558,10 +571,10 @@ public class ProtoFoodResource {
         List<TasteEntity> tastesForDate;
 
         try {
-            tiffinForDate = fetchAllTiffin(date, meal);
-            extrasForDate = fetchAllExtras(date, meal);
-            skipsForDate = fetchAllSkips(date, meal);
-            tastesForDate = fetchAllTastes(date, meal);
+            tiffinForDate = fetchAllTiffin(date, meal).getBody();
+            extrasForDate = fetchAllExtras(date, meal).getBody();
+            skipsForDate = fetchAllSkips(date, meal).getBody();
+            tastesForDate = fetchAllTastes(date, meal).getBody();
         } catch (RenderableException re) {
             log.error("RenderableException reported : {}, {}", re.getClass(), re.getMessage());
             throw re;
@@ -588,15 +601,16 @@ public class ProtoFoodResource {
                 userTiffinCount.put(skip.getUserId(), count);
             }
 
+            log.info("Adding consolidated tiffins data to the list");
             for (TiffinEntity tiffin : tiffinForDate) {
                 DailyTiffinEntity dailyTiffinEntity = new DailyTiffinEntity();
                 dailyTiffinEntity.setUserId(tiffin.getUserId());
                 dailyTiffinEntity.setQuantity(userTiffinCount.get(tiffin.getUserId()));
 
-                UserEntity user = getUser(tiffin.getUserId());
+                UserEntity user = getUser(tiffin.getUserId()).getBody();
                 dailyTiffinEntity.setUserName(user.getFirstName() + " " + user.getLastName());
 
-                LocationEntity location = getLocation(tiffin.getLocationId());
+                LocationEntity location = getLocation(tiffin.getLocationId()).getBody();
                 dailyTiffinEntity.setAddress(Util.generateAddressFromLocationEntity(location));
                 dailyTiffinEntity.setLatitude(location.getLatitude());
                 dailyTiffinEntity.setLongitude(location.getLongitude());
@@ -604,12 +618,17 @@ public class ProtoFoodResource {
                 dailyTiffinEntity.setTaste(false);
                 dailyTiffinEntityList.add(dailyTiffinEntity);
             }
+
+            log.info("Adding Taste tiffin orders to the list");
             for (TasteEntity taste : tastesForDate) {
                 DailyTiffinEntity dailyTiffinEntity = new DailyTiffinEntity();
                 dailyTiffinEntity.setUserId(taste.getUserId());
                 dailyTiffinEntity.setQuantity(taste.getQuantity());
 
-                LocationEntity location = getLocation(taste.getLocationId());
+                UserEntity user = getUser(taste.getUserId()).getBody();
+                dailyTiffinEntity.setUserName(user.getFirstName() + " " + user.getLastName());
+
+                LocationEntity location = getLocation(taste.getLocationId()).getBody();
                 dailyTiffinEntity.setAddress(Util.generateAddressFromLocationEntity(location));
                 dailyTiffinEntity.setLatitude(location.getLatitude());
                 dailyTiffinEntity.setLongitude(location.getLongitude());
@@ -621,7 +640,6 @@ public class ProtoFoodResource {
             log.error("Exception Reported for generateDailyTiffinReport. {}, {}", e.getClass(), e.getMessage());
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
-
-        return dailyTiffinEntityList;
+        return ResponseEntity.ok(dailyTiffinEntityList);
     }
 }

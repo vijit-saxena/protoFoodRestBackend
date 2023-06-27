@@ -1,14 +1,9 @@
 package com.example.protoFoodV2.databaseModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDateTime;
 
 @Data
 @Document
@@ -32,5 +27,5 @@ public class TasteEntity {
     @JsonProperty
     private String locationId;
     @JsonProperty
-    private String timeCreatedInEpochMilli;
+    private String timeCreated;
 }
