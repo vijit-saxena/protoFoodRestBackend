@@ -8,32 +8,40 @@
 		<version>3.0.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.example</groupId>
-	<artifactId>protoFoodV2</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>protoFoodV2</name>
+	<artifactId>proto-food-api</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+
+	<name>proto-food-api</name>
 	<description>Demo project for Spring Boot</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+			<version>3.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>3.0.6</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.26</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>3.1.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -43,6 +51,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.0.6</version>
 				<configuration>
 					<excludes>
 						<exclude>
@@ -53,7 +62,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>protoFood-API</finalName>
 	</build>
 
 </project>
