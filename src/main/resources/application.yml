@@ -3,3 +3,5 @@ spring:
     mongodb:
       uri: mongodb+srv://vijitsaxena:4YvxBzwaGq5xmIHL@cluster0.mtr8jby.mongodb.net/?retryWrites=true&w=majority
       database: protoFoodV2
+server:
+  port: 24000
