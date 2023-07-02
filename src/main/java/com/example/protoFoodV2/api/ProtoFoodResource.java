@@ -38,7 +38,6 @@ public class ProtoFoodResource {
     private final int PAGE_SIZE = 10;
 
     @GetMapping("/listAllUsers")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<UserEntity>> listAllUsers() {
         log.info("Attempting to list all users");
         try {
@@ -52,7 +51,6 @@ public class ProtoFoodResource {
 
     // USER APIs
     @PostMapping("/createUser")
-    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Void> createUser(@RequestBody UserEntity userEntity) {
         log.info("Attempting to create a new userEntity : {}", userEntity.toString());
         /*
@@ -90,14 +88,15 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getUser")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<UserEntity> getUser(@RequestParam String userPhoneNumber) {
-        log.info("Attempting to fetch userInfo with phoneNumber {}", userPhoneNumber);
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+
+        log.info("Attempting to fetch userInfo with phoneNumber {}", finalUserPhoneNumber);
         try {
-            UserEntity user = userManagementService.getUserByPhoneNumber(userPhoneNumber);
+            UserEntity user = userManagementService.getUserByPhoneNumber(finalUserPhoneNumber);
             return ResponseEntity.ok(user);
         } catch (EntityNotFoundException e) {
-            log.error("Could not find user with phoneNumber {}", userPhoneNumber);
+            log.error("Could not find user with phoneNumber {}", finalUserPhoneNumber);
             throw RenderableExceptionGenerator.generateInternalServerErrorException(e.getMessage(), e);
         } catch (Exception e) {
             log.error("Unexpected exception occurred : {}, {}", e.getClass(), e.getMessage());
@@ -107,7 +106,6 @@ public class ProtoFoodResource {
 
     // SUBSCRIPTION APIs
     @PostMapping("/addSubscription") // This is an ADMIN API
-    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Void> postNewSubscription(@RequestBody SubscriptionEntity subscriptionEntity) {
         log.info("Attempting to register new subscription {}", subscriptionEntity.toString());
         /*
@@ -125,7 +123,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/viewSubscription") // This is an ADMIN API
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<SubscriptionEntity> viewSubscriptionRecord(
             @RequestParam(name = "id") String subscriptionId) {
         log.info("Attempting to fetch subscription record for Id : {}", subscriptionId);
@@ -150,7 +147,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/listAllSubscriptions") // This is an ADMIN API
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<SubscriptionEntity>> listAllSubscriptions() {
         log.info("Attempting to list all subscriptions");
         try {
@@ -163,7 +159,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/listActiveSubscriptions")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<SubscriptionEntity>> listActiveSubscriptions() {
         log.info("Attempting to list all active subscriptions");
 
@@ -178,7 +173,6 @@ public class ProtoFoodResource {
 
     // EXTRA-TIFFIN APIs
     @PostMapping("/addExtraTiffinRecord")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> addExtraTiffinRecord(@RequestBody ExtraEntity extraTiffinEntity) {
         log.info("Attempting to add new extra tiffin record : {}", extraTiffinEntity.toString());
         /*
@@ -200,7 +194,6 @@ public class ProtoFoodResource {
 
     // SKIP-TIFFIN APIs
     @PostMapping("/addSkipTiffinRecord")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> addSkipTiffinRecord(@RequestBody SkipEntity skipModel) {
         log.info("Attempting to add skip tiffin record : {}", skipModel.toString());
         try {
@@ -217,7 +210,6 @@ public class ProtoFoodResource {
 
     // LOCATION APIs
     @PostMapping("/addLocation")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> postNewLocation(@RequestBody LocationEntity locationEntity) {
         log.info("Attempting to add new location: {}", locationEntity.toString());
         try {
@@ -230,7 +222,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/fetchUserAllLocations/{userPhoneNumber}")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<LocationEntity>> fetchUserAllLocations(@PathVariable String userPhoneNumber) {
         log.info("Attempting to fetch user->{} all locations", userPhoneNumber);
         String parsedPhoneNumber;
@@ -252,7 +243,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getLocation/{locationId}")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<LocationEntity> getLocation(@PathVariable String locationId) {
         log.info("Attempting to fetch location with Id : {}", locationId);
 
@@ -275,7 +265,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/fetchUserClosestLocation")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<LocationEntity> fetchUserClosestLocation(
             @RequestParam(name = "latitude") double latitude,
             @RequestParam(name = "longitude") double longitude,
@@ -306,7 +295,6 @@ public class ProtoFoodResource {
 
     // PAYMENT APIs
     @PostMapping("/recordNewPayment")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> recordNewPayment(@RequestBody PaymentEntity paymentEntity) {
         log.info("Attempting to insert new payment record: {}", paymentEntity.toString());
         try {
@@ -322,7 +310,6 @@ public class ProtoFoodResource {
 
     // TASTE APIs
     @PostMapping("/addTasteTiffinRecord")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> addTasteRecord(@RequestBody TasteEntity tasteEntity) {
         log.info("Attempting to add taste record: {}", tasteEntity.toString());
         try {
@@ -336,7 +323,6 @@ public class ProtoFoodResource {
 
     //TIFFIN APIs
     @PostMapping("/addTiffinRecord")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> addTiffinRecord(@RequestBody TiffinEntity tiffinModel) {
         log.info("Attempting to add new tiffin record: {}", tiffinModel.toString());
         try {
@@ -349,7 +335,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getUserActiveTiffin")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<TiffinEntity> fetchUserActiveTiffin(
             @RequestParam String userPhoneNumber,
             @RequestParam String dateTime) {
@@ -373,7 +358,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getUserFutureTiffin")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<TiffinEntity> fetchUserFutureTiffin(
             @RequestParam String userPhoneNumber,
             @RequestParam String dateTime) {
@@ -417,7 +401,6 @@ public class ProtoFoodResource {
 
     // ORDER APIs
     @PostMapping("/addNewOrderRecord")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Void> addNewOrderRecord(@RequestBody OrderEntity order) {
         log.info("Attempting to add new order: {}", order.toString());
         try {
@@ -430,7 +413,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/getUserAllOrders/{userPhoneNumber}")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<ConsolidatedOrder>> getUserAllConsolidatedOrders(
             @PathVariable String userPhoneNumber,
             @RequestParam(defaultValue = "0") int pageNumber) {
@@ -500,7 +482,6 @@ public class ProtoFoodResource {
 
     // DAILY TIFFIN LIST OPERATIONS
     @GetMapping("/fetchAllTiffin")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<TiffinEntity>> fetchAllTiffin(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
@@ -515,7 +496,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/fetchAllExtras")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<ExtraEntity>> fetchAllExtras(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
@@ -530,7 +510,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/fetchAllSkips")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<SkipEntity>> fetchAllSkips(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
@@ -545,7 +524,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/fetchAllTastes")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<TasteEntity>> fetchAllTastes(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {
@@ -560,7 +538,6 @@ public class ProtoFoodResource {
     }
 
     @GetMapping("/generateDailyTiffinReport")
-    @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<DailyTiffinEntity>> generateDailyTiffinReport(
             @NonNull @RequestParam String date,
             @NonNull @RequestParam String meal) {

@@ -15,9 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @ToString
 public class UserEntity {
-    @Id
-    @JsonProperty
-    private String userId;
     @JsonProperty
     private String firstName;
     @JsonProperty
@@ -25,7 +22,7 @@ public class UserEntity {
     @JsonProperty
     private String gender;
     @JsonProperty
-    @Indexed(unique = true)
+    @Id
     private String contact;
     @JsonProperty
     private String email;
