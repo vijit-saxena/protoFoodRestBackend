@@ -1,3 +1,3 @@
 FROM openjdk:17
-ADD target/protoFood-DP.jar protoFood-DP.jar
-ENTRYPOINT ["java", "-jar", "protoFood-DP.jar"]
+ADD target/protoFood-API.jar protoFood-API.jar
+ENTRYPOINT ["java", "-jar", "protoFood-API.jar"]
