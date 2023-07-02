@@ -25,11 +25,9 @@ public class UserManagementService {
     }
 
     public UserEntity getUserByPhoneNumber(String userPhoneNumber) {
-        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
-
-        return usersDataProvider.findUserEntityByContact(finalUserPhoneNumber)
+        return usersDataProvider.findUserEntityByContact(userPhoneNumber)
                 .orElseThrow(() -> new EntityNotFoundException(
                         EntityType.User,
-                        finalUserPhoneNumber));
+                        userPhoneNumber));
     }
 }
