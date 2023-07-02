@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://vijitsaxena:4YvxBzwaGq5xmIHL@cluster0.mtr8jby.mongodb.net/?retryWrites=true&w=majority
+      database: protoFoodV2
