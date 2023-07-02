@@ -53,7 +53,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>protoFood-DP</finalName>
+		<finalName>protoFood-API</finalName>
 	</build>
 
 </project>
