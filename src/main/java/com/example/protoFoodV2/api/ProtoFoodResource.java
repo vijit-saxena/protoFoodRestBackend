@@ -1,5 +1,9 @@
 package com.example.protoFoodV2.api;
 
+import com.example.protoFoodV2.api.models.ExtraTiffinApiModel;
+import com.example.protoFoodV2.api.models.SkipTiffinApiModel;
+import com.example.protoFoodV2.api.models.TasteTiffinApiModel;
+import com.example.protoFoodV2.api.models.TiffinApiModel;
 import com.example.protoFoodV2.databaseModels.*;
 import com.example.protoFoodV2.exceptions.EntityNotFoundException;
 import com.example.protoFoodV2.exceptions.RenderableException;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.InvalidParameterException;
@@ -618,5 +623,108 @@ public class ProtoFoodResource {
             throw RenderableExceptionGenerator.generateInternalServerErrorException();
         }
         return ResponseEntity.ok(dailyTiffinEntityList);
+    }
+
+    @PostMapping("/tasteTiffinOperation/{userPhoneNumber}")
+    @Transactional
+    public ResponseEntity<Void> tasteTiffinOperation(
+            @PathVariable String userPhoneNumber,
+            @RequestBody TasteTiffinApiModel tasteModel
+            ) {
+        /*
+        1. Record payment -- already done
+        2. Record taste tiffin
+        3. Generate order entity and save
+        4. Send API response
+         */
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        tasteModel.setUserId(finalUserPhoneNumber);
+
+        try {
+            addTasteRecord(tasteModel.toTasteEntity());
+            addNewOrderRecord(tasteModel.toOrderEntity());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/extraTiffinOperation/{userPhoneNumber}")
+    @Transactional
+    public ResponseEntity<Void> extraTiffinOperation(
+            @PathVariable String userPhoneNumber,
+            @RequestBody ExtraTiffinApiModel extraModel
+    ) {
+        /*
+        Validate user is a subscriber
+        1. Record payment -- already done
+        2. Record extra tiffin
+        3. Generate order entity and save
+        4. Send API response
+         */
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        extraModel.setUserId(finalUserPhoneNumber);
+
+        try {
+            addExtraTiffinRecord(extraModel.toExtraEntity());
+            addNewOrderRecord(extraModel.toOrderEntity());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/skipTiffinOperation/{userPhoneNumber}")
+    @Transactional
+    public ResponseEntity<Void> skipTiffinOperation(
+            @PathVariable String userPhoneNumber,
+            @RequestBody SkipTiffinApiModel skipModel
+    ) {
+        /*
+        Validate user is a subscriber
+        1. Record skip tiffin
+        2. Generate order entity and save
+        3. Send API response
+         */
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        skipModel.setUserId(finalUserPhoneNumber);
+
+        try {
+            addSkipTiffinRecord(skipModel.toSkipEntity());
+            addNewOrderRecord(skipModel.toOrderEntity());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/processTiffinSubscription/{userPhoneNumber}")
+    @Transactional
+    public ResponseEntity<Void> subscribeTiffinOperation(
+            @PathVariable String userPhoneNumber,
+            @RequestBody TiffinApiModel tiffinModel
+    ) {
+        /*
+        Validate subscription requested does not overlap existing subscription, if any
+        1. Record payment -- already done
+        2. Record subscribe tiffin data
+        3. Generate order entity and save
+        4. Send API response
+         */
+
+        String finalUserPhoneNumber = Util.refactorPhoneNumber(userPhoneNumber);
+        tiffinModel.setUserId(finalUserPhoneNumber);
+
+        try {
+            addTiffinRecord(tiffinModel.toTiffinEntity());
+            addNewOrderRecord(tiffinModel.toOrderEntity());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
