@@ -632,7 +632,7 @@ public class ProtoFoodResource {
             @RequestBody TasteTiffinApiModel tasteModel
             ) {
         /*
-        1. Record payment
+        1. Record payment -- already done
         2. Record taste tiffin
         3. Generate order entity and save
         4. Send API response
@@ -641,7 +641,6 @@ public class ProtoFoodResource {
         tasteModel.setUserId(finalUserPhoneNumber);
 
         try {
-            recordNewPayment(tasteModel.toPaymentEntity());
             addTasteRecord(tasteModel.toTasteEntity());
             addNewOrderRecord(tasteModel.toOrderEntity());
         } catch (Exception e) {
@@ -659,7 +658,7 @@ public class ProtoFoodResource {
     ) {
         /*
         Validate user is a subscriber
-        1. Record payment
+        1. Record payment -- already done
         2. Record extra tiffin
         3. Generate order entity and save
         4. Send API response
@@ -668,7 +667,6 @@ public class ProtoFoodResource {
         extraModel.setUserId(finalUserPhoneNumber);
 
         try {
-            recordNewPayment(extraModel.toPaymentEntity());
             addExtraTiffinRecord(extraModel.toExtraEntity());
             addNewOrderRecord(extraModel.toOrderEntity());
         } catch (Exception e) {
@@ -721,7 +719,6 @@ public class ProtoFoodResource {
         tiffinModel.setUserId(finalUserPhoneNumber);
 
         try {
-//            recordNewPayment(tiffinModel.toPaymentEntity());
             addTiffinRecord(tiffinModel.toTiffinEntity());
             addNewOrderRecord(tiffinModel.toOrderEntity());
         } catch (Exception e) {
